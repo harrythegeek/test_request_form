@@ -2,41 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Test Request Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
-<body>
-    <h2>Submit a Test Request</h2>
-    <form action="{{ url_for('submit') }}" method="post">
-        <label for="tool">Select Measurement Tool:</label>
-        <select name="tool" id="tool">
-            <option value="Tool A">Tool A</option>
-            <option value="Tool B">Tool B</option>
-            <option value="Tool C">Tool C</option>
-        </select><br><br>
+<body class="bg-light">
 
-        <label for="polarisers">Use Polarisers:</label>
-        <select name="polarisers" id="polarisers">
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select><br><br>
+<div class="container mt-5">
+    <h2 class="text-center">Submit a Test Request</h2>
+    <form action="{{ url_for('submit') }}" method="post" class="p-4 bg-white shadow rounded">
 
-        <label for="voltage">Voltage (V):</label>
-        <input type="text" name="voltage" id="voltage" required><br><br>
+        <!-- General Inputs -->
+        <div class="row">
+            <div class="col-md-6">
+                <label for="deadline" class="form-label">Deadline:</label>
+                <input type="text" name="deadline" id="deadline" class="form-control" placeholder="Select date" required>
+            </div>
+            <div class="col-md-6">
+                <label for="notes" class="form-label">Notes:</label>
+                <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
 
-        <label for="expected_value">Expected Value:</label>
-        <input type="text" name="expected_value" id="expected_value"><br><br>
+        <hr>
 
-        <label for="deadline">Deadline (YYYY-MM-DD):</label>
-        <input type="text" name="deadline" id="deadline" required><br><br>
+        <!-- Side-by-side Test Sections -->
+        <div class="row">
+            <!-- Images Test -->
+            <div class="col-md-4">
+                <h4>Images Test</h4>
+                <label for="tool_images" class="form-label">Measurement Tool:</label>
+                <select name="tool_images" id="tool_images" class="form-select">
+                    <option value="Tool A">Tool A</option>
+                    <option value="Tool B">Tool B</option>
+                    <option value="Tool C">Tool C</option>
+                </select>
 
-        <label for="notes">Notes:</label>
-        <textarea name="notes" id="notes"></textarea><br><br>
+                <label for="voltage_images" class="form-label mt-2">Voltage (V):</label>
+                <input type="number" step="0.1" name="voltage_images" id="voltage_images" class="form-control">
 
-        <button type="submit">Submit Request</button>
+                <label for="expected_value_images" class="form-label mt-2">Expected Value:</label>
+                <input type="text" name="expected_value_images" id="expected_value_images" class="form-control">
+
+                <label for="polarisers_images" class="form-label mt-2">Polarisers:</label>
+                <select name="polarisers_images" id="polarisers_images" class="form-select">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="cell_orientation" class="form-label mt-2">Cell Orientation:</label>
+                <input type="text" name="cell_orientation" id="cell_orientation" class="form-control">
+
+                <label for="polariser_number" class="form-label mt-2">Polariser Number:</label>
+                <input type="number" name="polariser_number" id="polariser_number" class="form-control">
+
+                <label for="state_of_cell" class="form-label mt-2">State of Cell:</label>
+                <select name="state_of_cell" id="state_of_cell" class="form-select">
+                    <option value="ON">ON</option>
+                    <option value="OFF">OFF</option>
+                </select>
+            </div>
+
+            <!-- Test B -->
+            <div class="col-md-4">
+                <h4>Test B</h4>
+                <label for="tool_b" class="form-label">Measurement Tool:</label>
+                <select name="tool_b" id="tool_b" class="form-select">
+                    <option value="Tool A">Tool A</option>
+                    <option value="Tool B">Tool B</option>
+                    <option value="Tool C">Tool C</option>
+                </select>
+
+                <label for="voltage_b" class="form-label mt-2">Voltage (V):</label>
+                <input type="number" step="0.1" name="voltage_b" id="voltage_b" class="form-control">
+
+                <label for="expected_value_b" class="form-label mt-2">Expected Value:</label>
+                <input type="text" name="expected_value_b" id="expected_value_b" class="form-control">
+
+                <label for="test_b_field1" class="form-label mt-2">Test B Field 1:</label>
+                <input type="text" name="test_b_field1" id="test_b_field1" class="form-control">
+
+                <label for="test_b_field2" class="form-label mt-2">Test B Field 2:</label>
+                <input type="text" name="test_b_field2" id="test_b_field2" class="form-control">
+            </div>
+
+            <!-- Test C -->
+            <div class="col-md-4">
+                <h4>Test C</h4>
+                <label for="tool_c" class="form-label">Measurement Tool:</label>
+                <select name="tool_c" id="tool_c" class="form-select">
+                    <option value="Tool A">Tool A</option>
+                    <option value="Tool B">Tool B</option>
+                    <option value="Tool C">Tool C</option>
+                </select>
+
+                <label for="voltage_c" class="form-label mt-2">Voltage (V):</label>
+                <input type="number" step="0.1" name="voltage_c" id="voltage_c" class="form-control">
+
+                <label for="expected_value_c" class="form-label mt-2">Expected Value:</label>
+                <input type="text" name="expected_value_c" id="expected_value_c" class="form-control">
+
+                <label for="test_c_field1" class="form-label mt-2">Test C Field 1:</label>
+                <input type="text" name="test_c_field1" id="test_c_field1" class="form-control">
+
+                <label for="test_c_field2" class="form-label mt-2">Test C Field 2:</label>
+                <input type="text" name="test_c_field2" id="test_c_field2" class="form-control">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-4">Submit Request</button>
     </form>
 
-    <br>
-    <a href="{{ url_for('view_requests') }}">View Submitted Requests</a>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('view_requests') }}" class="btn btn-secondary">View Submitted Requests</a>
+    </div>
+</div>
+
+<script>
+    flatpickr("#deadline", {
+        enableTime: false,
+        dateFormat: "Y-m-d"
+    });
+</script>
+
 </body>
 </html>
