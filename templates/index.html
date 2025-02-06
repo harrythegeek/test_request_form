@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Request Form</title>
+</head>
+<body>
+    <h2>Submit a Test Request</h2>
+    <form action="{{ url_for('submit') }}" method="post">
+        <label for="tool">Select Measurement Tool:</label>
+        <select name="tool" id="tool">
+            <option value="Tool A">Tool A</option>
+            <option value="Tool B">Tool B</option>
+            <option value="Tool C">Tool C</option>
+        </select><br><br>
+
+        <label for="polarisers">Use Polarisers:</label>
+        <select name="polarisers" id="polarisers">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select><br><br>
+
+        <label for="voltage">Voltage (V):</label>
+        <input type="text" name="voltage" id="voltage" required><br><br>
+
+        <label for="expected_value">Expected Value:</label>
+        <input type="text" name="expected_value" id="expected_value"><br><br>
+
+        <label for="deadline">Deadline (YYYY-MM-DD):</label>
+        <input type="text" name="deadline" id="deadline" required><br><br>
+
+        <label for="notes">Notes:</label>
+        <textarea name="notes" id="notes"></textarea><br><br>
+
+        <button type="submit">Submit Request</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('view_requests') }}">View Submitted Requests</a>
+</body>
+</html>

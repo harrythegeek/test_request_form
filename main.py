@@ -1,39 +1,40 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
 
-# Define the Excel file
+app = Flask(__name__)
 FILE_NAME = "test_requests.xlsx"
 
 # Check if file exists, if not create it with headers
 if not os.path.exists(FILE_NAME):
     df = pd.DataFrame(
-        columns=["Test Type", "Measurement Tool", "Polarisers", "Voltage (V)", "Expected Value", "Deadline", "Notes"])
+        columns=["Request ID", "Test Type", "Measurement Tool", "Polarisers", "Voltage (V)", "Expected Value",
+                 "Deadline", "Notes"])
     df.to_excel(FILE_NAME, index=False)
 
 
-# Function to save request
-def save_request():
-    test_type = "Transmittance"
-    tool = tool_var.get()
-    polarisers = polarisers_var.get()
-    voltage = voltage_entry.get()
-    expected_value = expected_entry.get()
-    deadline = deadline_entry.get()
-    notes = notes_entry.get()
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    # Validate inputs
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    tool = request.form.get("tool")
+    polarisers = request.form.get("polarisers")
+    voltage = request.form.get("voltage")
+    expected_value = request.form.get("expected_value")
+    deadline = request.form.get("deadline")
+    notes = request.form.get("notes")
+
     if not tool or not voltage or not deadline:
-        messagebox.showerror("Error", "Please fill in all required fields.")
-        return
+        return "Error: Please fill in all required fields."
 
-    # Load existing data
     df = pd.read_excel(FILE_NAME)
-
-    # Append new data
+    request_id = len(df) + 1
     new_entry = pd.DataFrame({
-        "Test Type": [test_type],
+        "Request ID": [request_id],
+        "Test Type": ["Transmittance"],
         "Measurement Tool": [tool],
         "Polarisers": [polarisers],
         "Voltage (V)": [voltage],
@@ -41,49 +42,17 @@ def save_request():
         "Deadline": [deadline],
         "Notes": [notes]
     })
-
     df = pd.concat([df, new_entry], ignore_index=True)
     df.to_excel(FILE_NAME, index=False)
-    messagebox.showinfo("Success", "Test request saved successfully!")
-    root.destroy()
+
+    return redirect(url_for('index'))
 
 
-# Create GUI
-root = tk.Tk()
-root.title("Test Request Form")
+@app.route('/requests')
+def view_requests():
+    df = pd.read_excel(FILE_NAME)
+    return df.to_html()
 
-# Dropdown for measurement tool
-ttk.Label(root, text="Select Measurement Tool:").grid(row=0, column=0, padx=10, pady=5)
-tool_var = ttk.Combobox(root, values=["Tool A", "Tool B", "Tool C"], state="readonly")
-tool_var.grid(row=0, column=1, padx=10, pady=5)
 
-# Dropdown for polarisers
-ttk.Label(root, text="Use Polarisers:").grid(row=1, column=0, padx=10, pady=5)
-polarisers_var = ttk.Combobox(root, values=["Yes", "No"], state="readonly")
-polarisers_var.grid(row=1, column=1, padx=10, pady=5)
-
-# Voltage input
-ttk.Label(root, text="Voltage (V):").grid(row=2, column=0, padx=10, pady=5)
-voltage_entry = ttk.Entry(root)
-voltage_entry.grid(row=2, column=1, padx=10, pady=5)
-
-# Expected Value input
-ttk.Label(root, text="Expected Value:").grid(row=3, column=0, padx=10, pady=5)
-expected_entry = ttk.Entry(root)
-expected_entry.grid(row=3, column=1, padx=10, pady=5)
-
-# Deadline input
-ttk.Label(root, text="Deadline (YYYY-MM-DD):").grid(row=4, column=0, padx=10, pady=5)
-deadline_entry = ttk.Entry(root)
-deadline_entry.grid(row=4, column=1, padx=10, pady=5)
-
-# Notes input
-ttk.Label(root, text="Notes:").grid(row=5, column=0, padx=10, pady=5)
-notes_entry = ttk.Entry(root)
-notes_entry.grid(row=5, column=1, padx=10, pady=5)
-
-# Save button
-submit_btn = ttk.Button(root, text="Submit Request", command=save_request)
-submit_btn.grid(row=6, column=0, columnspan=2, pady=10)
-
-root.mainloop()
+if __name__ == '__main__':
+    app.run(debug=True)
