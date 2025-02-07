@@ -1,20 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import os
-
-"this is a comment for git"
+import uuid
 
 app = Flask(__name__)
 FILE_NAME = "test_requests.xlsx"
 
 # Check if file exists, if not create it with headers
 if not os.path.exists(FILE_NAME):
-    df = pd.DataFrame(
-        columns=["Request ID", "Test Type", "Deadline", "Notes", "Measurement Tool (Images)", "Voltage (Images)",
-                 "Expected Value (Images)", "Polarisers (Images)", "Cell Orientation", "Polariser Number",
-                 "State of Cell", "Measurement Tool (Test B)", "Voltage (Test B)", "Expected Value (Test B)",
-                 "Test B Field 1", "Test B Field 2", "Measurement Tool (Test C)", "Voltage (Test C)",
-                 "Expected Value (Test C)", "Test C Field 1", "Test C Field 2"])
+    df = pd.DataFrame(columns=["Request ID", "Test Type", "Instance ID", "Voltage", "Polarisers", "Cell Orientation",
+                               "Polariser Number", "State of Cell", "Tool", "Notes"])
     df.to_excel(FILE_NAME, index=False)
 
 
@@ -25,60 +20,32 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    deadline = request.form.get("deadline")
-    notes = request.form.get("notes")
-    tool_images = request.form.get("tool_images")
-    voltage_images = request.form.get("voltage_images")
-    expected_value_images = request.form.get("expected_value_images")
-    polarisers_images = request.form.get("polarisers_images")
-    cell_orientation = request.form.get("cell_orientation")
-    polariser_number = request.form.get("polariser_number")
-    state_of_cell = request.form.get("state_of_cell")
+    request_id = str(uuid.uuid4())  # Generate a unique ID for the test request
+    test_instances = request.json.get("test_instances", [])
 
-    tool_b = request.form.get("tool_b")
-    voltage_b = request.form.get("voltage_b")
-    expected_value_b = request.form.get("expected_value_b")
-    test_b_field1 = request.form.get("test_b_field1")
-    test_b_field2 = request.form.get("test_b_field2")
-
-    tool_c = request.form.get("tool_c")
-    voltage_c = request.form.get("voltage_c")
-    expected_value_c = request.form.get("expected_value_c")
-    test_c_field1 = request.form.get("test_c_field1")
-    test_c_field2 = request.form.get("test_c_field2")
-
-    if not deadline:
-        return "Error: Please fill in the required fields."
+    if not test_instances:
+        return jsonify({"error": "No test instances provided"}), 400
 
     df = pd.read_excel(FILE_NAME)
-    request_id = len(df) + 1
-    new_entry = pd.DataFrame({
-        "Request ID": [request_id],
-        "Test Type": ["Transmittance"],
-        "Deadline": [deadline],
-        "Notes": [notes],
-        "Measurement Tool (Images)": [tool_images],
-        "Voltage (Images)": [voltage_images],
-        "Expected Value (Images)": [expected_value_images],
-        "Polarisers (Images)": [polarisers_images],
-        "Cell Orientation": [cell_orientation],
-        "Polariser Number": [polariser_number],
-        "State of Cell": [state_of_cell],
-        "Measurement Tool (Test B)": [tool_b],
-        "Voltage (Test B)": [voltage_b],
-        "Expected Value (Test B)": [expected_value_b],
-        "Test B Field 1": [test_b_field1],
-        "Test B Field 2": [test_b_field2],
-        "Measurement Tool (Test C)": [tool_c],
-        "Voltage (Test C)": [voltage_c],
-        "Expected Value (Test C)": [expected_value_c],
-        "Test C Field 1": [test_c_field1],
-        "Test C Field 2": [test_c_field2]
-    })
-    df = pd.concat([df, new_entry], ignore_index=True)
-    df.to_excel(FILE_NAME, index=False)
 
-    return redirect(url_for('index'))
+    for instance in test_instances:
+        instance_id = str(uuid.uuid4())  # Unique ID for each test instance
+        new_entry = pd.DataFrame({
+            "Request ID": [request_id],
+            "Test Type": [instance.get("test_type", "")],
+            "Instance ID": [instance_id],
+            "Voltage": [instance.get("voltage", "")],
+            "Polarisers": [instance.get("polarisers", "")],
+            "Cell Orientation": [instance.get("cell_orientation", "")],
+            "Polariser Number": [instance.get("polariser_number", "")],
+            "State of Cell": [instance.get("state_of_cell", "")],
+            "Tool": [instance.get("tool", "")],
+            "Notes": [instance.get("notes", "")]
+        })
+        df = pd.concat([df, new_entry], ignore_index=True)
+
+    df.to_excel(FILE_NAME, index=False)
+    return jsonify({"message": "Test request submitted successfully", "request_id": request_id})
 
 
 @app.route('/requests')
