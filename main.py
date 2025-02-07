@@ -27,7 +27,6 @@ def index():
 def submit():
     deadline = request.form.get("deadline")
     notes = request.form.get("notes")
-
     tool_images = request.form.get("tool_images")
     voltage_images = request.form.get("voltage_images")
     expected_value_images = request.form.get("expected_value_images")
