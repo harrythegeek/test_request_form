@@ -16,6 +16,19 @@
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+        .test-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .test-block {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -37,6 +50,7 @@
                 <button type="button" class="btn btn-secondary mt-3" onclick="addTestInstance()">Add Test Instance</button>
                 <button type="submit" class="btn btn-primary w-100 mt-3">Submit Request</button>
             </form>
+            <div id="testBlocks" class="test-blocks"></div>
         </div>
     </div>
 
@@ -47,12 +61,11 @@
                 <div class="border p-3 mt-3 bg-light rounded" id="instance-${instanceId}">
                     <h5>Test Instance</h5>
                     <label class="form-label">Test Type:</label>
-                    <select class="form-select" name="test_type[]">
+                    <select class="form-select test-type" name="test_type[]" onchange="updateTestBlocks()">
                         <option value="Images">Images</option>
                         <option value="Transmission">Transmission</option>
                         <option value="Switching Speed">Switching Speed</option>
                     </select>
-
                     <h6 class="mt-3">Polarisers</h6>
                     <label class="form-label">Type:</label>
                     <input type="text" name="polarisers_type[]" class="form-control">
@@ -66,7 +79,6 @@
                     <input type="number" name="polarisers_cell_alignment[]" class="form-control">
                     <label class="form-label mt-2">Orientation of Pol2:</label>
                     <input type="number" name="polarisers_pol2[]" class="form-control">
-
                     <h6 class="mt-3">Voltage</h6>
                     <label class="form-label">Range:</label>
                     <input type="text" name="voltage_range[]" class="form-control">
@@ -74,25 +86,33 @@
                     <input type="text" name="voltage_single_point[]" class="form-control">
                     <label class="form-label mt-2">Sweep:</label>
                     <input type="text" name="voltage_sweep[]" class="form-control">
-
                     <h6 class="mt-3">Tool</h6>
                     <label class="form-label">Setup:</label>
                     <input type="text" name="tool_setup[]" class="form-control">
                     <label class="form-label mt-2">Angle of Incidence:</label>
                     <input type="text" name="tool_angle_incidence[]" class="form-control">
-
                     <h6 class="mt-3">Sample Number</h6>
                     <label class="form-label">Number of Cells to be Tested:</label>
                     <input type="number" name="sample_number[]" class="form-control">
-
                     <button type="button" class="btn btn-danger mt-2" onclick="removeTestInstance(${instanceId})">Remove</button>
                 </div>
             `;
             $('#testInstances').append(testInstanceHTML);
+            updateTestBlocks();
         }
 
         function removeTestInstance(id) {
             $(`#instance-${id}`).remove();
+            updateTestBlocks();
+        }
+
+        function updateTestBlocks() {
+            $('#testBlocks').empty();
+            $('.test-type').each(function() {
+                let testType = $(this).val();
+                let blockHTML = `<div class="test-block">${testType}</div>`;
+                $('#testBlocks').append(blockHTML);
+            });
         }
 
         $('#testRequestForm').submit(function(event) {
@@ -101,19 +121,7 @@
 
             $('#testInstances .border').each(function() {
                 let instance = {
-                    test_type: $(this).find('[name="test_type[]"]').val(),
-                    polarisers_type: $(this).find('[name="polarisers_type[]"]').val(),
-                    polarisers_lamination: $(this).find('[name="polarisers_lamination[]"]').val(),
-                    polarisers_number: $(this).find('[name="polarisers_number[]"]').val(),
-                    polarisers_pol1: $(this).find('[name="polarisers_pol1[]"]').val(),
-                    polarisers_cell_alignment: $(this).find('[name="polarisers_cell_alignment[]"]').val(),
-                    polarisers_pol2: $(this).find('[name="polarisers_pol2[]"]').val(),
-                    voltage_range: $(this).find('[name="voltage_range[]"]').val(),
-                    voltage_single_point: $(this).find('[name="voltage_single_point[]"]').val(),
-                    voltage_sweep: $(this).find('[name="voltage_sweep[]"]').val(),
-                    tool_setup: $(this).find('[name="tool_setup[]"]').val(),
-                    tool_angle_incidence: $(this).find('[name="tool_angle_incidence[]"]').val(),
-                    sample_number: $(this).find('[name="sample_number[]"]').val()
+                    test_type: $(this).find('[name="test_type[]"]').val()
                 };
                 testInstances.push(instance);
             });
