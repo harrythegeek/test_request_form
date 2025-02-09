@@ -3,8 +3,6 @@ import pandas as pd
 import os
 import uuid
 
-"example"
-
 app = Flask(__name__)
 FILE_NAME = "test_requests.xlsx"
 

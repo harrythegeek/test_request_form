@@ -65,6 +65,14 @@
                         <option value="Images">Images</option>
                         <option value="Transmission">Transmission</option>
                         <option value="Switching Speed">Switching Speed</option>
+                        <option value="Haze">Haze</option>
+                        <option value="Pretilt">Pretilt</option>
+                        <option value="Electrical Checks">Electrical Checks</option>
+                        <option value="Microscopy">Microscopy</option>
+                        <option value="Interferometry">Interferometry</option>
+                        <option value="Reflectance">Reflectance</option>
+                        <option value="Custom or New">Custom or New</option>
+                        <option value="Failure Analysis Test">Failure Analysis Test</option>
                     </select>
                     <h6 class="mt-3">Polarisers</h6>
                     <label class="form-label">Type:</label>
@@ -114,38 +122,6 @@
                 $('#testBlocks').append(blockHTML);
             });
         }
-
-        $('#testRequestForm').submit(function(event) {
-            event.preventDefault();
-            let testInstances = [];
-
-            $('#testInstances .border').each(function() {
-                let instance = {
-                    test_type: $(this).find('[name="test_type[]"]').val()
-                };
-                testInstances.push(instance);
-            });
-
-            let requestData = {
-                deadline: $('#deadline').val(),
-                notes: $('#notes').val(),
-                test_instances: testInstances
-            };
-
-            $.ajax({
-                url: '/submit',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),
-                success: function(response) {
-                    alert(response.message);
-                    location.reload();
-                },
-                error: function(response) {
-                    alert('Error submitting request');
-                }
-            });
-        });
     </script>
 </body>
 </html>
