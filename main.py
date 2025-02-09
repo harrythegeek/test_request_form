@@ -8,8 +8,10 @@ FILE_NAME = "test_requests.xlsx"
 
 # Check if file exists, if not create it with headers
 if not os.path.exists(FILE_NAME):
-    df = pd.DataFrame(columns=["Request ID", "Test Type", "Instance ID", "Voltage", "Polarisers", "Cell Orientation",
-                               "Polariser Number", "State of Cell", "Tool", "Notes"])
+    df = pd.DataFrame(columns=["Request ID", "Test Type", "Instance ID", "Polarisers Type", "Polarisers Lamination",
+                               "Number of Polarisers", "Orientation of Pol1", "Orientation of Cell Alignment Axis",
+                               "Orientation of Pol2", "Voltage Range", "Voltage Single Point", "Voltage Sweep",
+                               "Tool Setup", "Tool Angle of Incidence", "Sample Number", "Notes"])
     df.to_excel(FILE_NAME, index=False)
 
 
@@ -34,12 +36,18 @@ def submit():
             "Request ID": [request_id],
             "Test Type": [instance.get("test_type", "")],
             "Instance ID": [instance_id],
-            "Voltage": [instance.get("voltage", "")],
-            "Polarisers": [instance.get("polarisers", "")],
-            "Cell Orientation": [instance.get("cell_orientation", "")],
-            "Polariser Number": [instance.get("polariser_number", "")],
-            "State of Cell": [instance.get("state_of_cell", "")],
-            "Tool": [instance.get("tool", "")],
+            "Polarisers Type": [instance.get("polarisers_type", "")],
+            "Polarisers Lamination": [instance.get("polarisers_lamination", "")],
+            "Number of Polarisers": [instance.get("polarisers_number", "")],
+            "Orientation of Pol1": [instance.get("polarisers_pol1", "")],
+            "Orientation of Cell Alignment Axis": [instance.get("polarisers_cell_alignment", "")],
+            "Orientation of Pol2": [instance.get("polarisers_pol2", "")],
+            "Voltage Range": [instance.get("voltage_range", "")],
+            "Voltage Single Point": [instance.get("voltage_single_point", "")],
+            "Voltage Sweep": [instance.get("voltage_sweep", "")],
+            "Tool Setup": [instance.get("tool_setup", "")],
+            "Tool Angle of Incidence": [instance.get("tool_angle_incidence", "")],
+            "Sample Number": [instance.get("sample_number", "")],
             "Notes": [instance.get("notes", "")]
         })
         df = pd.concat([df, new_entry], ignore_index=True)
