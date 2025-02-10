@@ -11,7 +11,7 @@ if not os.path.exists(FILE_NAME):
     df = pd.DataFrame(columns=["Request ID", "Test Type", "Instance ID", "Polarisers Type", "Polarisers Lamination",
                                "Number of Polarisers", "Orientation of Pol1", "Orientation of Cell Alignment Axis",
                                "Orientation of Pol2", "Voltage Range", "Voltage Single Point", "Voltage Sweep",
-                               "Tool Setup", "Tool Angle of Incidence", "Sample Number", "Notes"])
+                               "Tool Setup", "Tool Angle of Incidence", "Sample Number",  "Cell structure", "Notes"])
     df.to_excel(FILE_NAME, index=False)
 
 
@@ -48,6 +48,7 @@ def submit():
             "Tool Setup": [instance.get("tool_setup", "")],
             "Tool Angle of Incidence": [instance.get("tool_angle_incidence", "")],
             "Sample Number": [instance.get("sample_number", "")],
+            "Cell structure": [instance.get("Cell structure","")],
             "Notes": [instance.get("notes", "")]
         })
         df = pd.concat([df, new_entry], ignore_index=True)
