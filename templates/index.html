@@ -62,6 +62,7 @@
                 <h4>Test Instances</h4>
                 <div id="testInstances" class="sortable-list"></div>
                 <button type="button" class="btn btn-secondary mt-3" onclick="addTestInstance()">Add Test Instance</button>
+                <button type="button" class="btn btn-warning mt-3" onclick="duplicateLastTestInstance()">Duplicate Last Test</button>
                 <button type="submit" class="btn btn-primary w-100 mt-3">Submit Request</button>
                 <div class="loading-spinner text-center">
                     <div class="spinner-border text-primary" role="status">
@@ -74,49 +75,78 @@
         </div>
     </div>
     <script>
-        function addTestInstance() {
-            let instanceId = Date.now();
-            let testInstanceHTML = `
-                <div class="border p-3 mt-3 bg-light rounded" id="instance-${instanceId}">
-                    <h5 class="d-flex justify-content-between">
-                        Test Instance
-                        <button type="button" class="btn-close" onclick="removeTestInstance(${instanceId})"></button>
-                    </h5>
-                    <label class="form-label">Test Type:</label>
-                    <select class="form-select test-type" name="test_type[]" onchange="toggleFields(${instanceId}); updateTestBlocks();">
-                        <option value="Images">Images</option>
-                        <option value="Transmission">Transmission</option>
-                        <option value="Switching Speed">Switching Speed</option>
-                        <option value="Haze">Haze</option>
-                        <option value="Pretilt">Pretilt</option>
-                        <option value="Electrical Checks">Electrical Checks</option>
-                        <option value="Microscopy">Microscopy</option>
-                        <option value="Interferometry">Interferometry</option>
-                        <option value="Reflectance">Reflectance</option>
-                        <option value="Custom or New">Custom or New</option>
-                        <option value="Failure Analysis Test">Failure Analysis Test</option>
-                    </select>
-                    <div id="fields-${instanceId}"></div>
-                </div>
-            `;
-            $('#testInstances').append(testInstanceHTML);
-            toggleFields(instanceId);
-            updateTestBlocks();
-        }
 
-        function removeTestInstance(instanceId) {
-            $(`#instance-${instanceId}`).remove();
-            updateTestBlocks();
-        }
+function duplicateLastTestInstance() {
+    let lastInstance = $('#testInstances .border:last');
 
-        function updateTestBlocks() {
-            $('#testBlocks').empty();
-            $('.test-type').each(function() {
-                let testType = $(this).val();
-                let blockHTML = `<div class="test-block">${testType}</div>`;
-                $('#testBlocks').append(blockHTML);
-            });
+    if (lastInstance.length === 0) {
+        alert("No previous test instance to duplicate.");
+        return;
+    }
+
+    let instanceId = Date.now();
+    let clonedInstance = lastInstance.clone();
+
+    clonedInstance.attr("id", `instance-${instanceId}`);
+    clonedInstance.find(".btn-close").attr("onclick", `removeTestInstance(${instanceId})`);
+
+    clonedInstance.find("select, input").each(function () {
+        let oldName = $(this).attr("name");
+        if (oldName) {
+            $(this).attr("name", oldName.replace(/\[\d+\]/, `[${instanceId}]`));
         }
+        $(this).val(lastInstance.find(`[name='${oldName}']`).val()); // Copy values
+    });
+
+    $('#testInstances').append(clonedInstance);
+    updateTestBlocks();
+}
+
+
+
+function addTestInstance() {
+    let instanceId = Date.now();
+    let testInstanceHTML = `
+        <div class="border p-3 mt-3 bg-light rounded" id="instance-${instanceId}">
+            <h5 class="d-flex justify-content-between">
+                Test Instance
+                <button type="button" class="btn-close" onclick="removeTestInstance(${instanceId})"></button>
+            </h5>
+            <label class="form-label">Test Type:</label>
+            <select class="form-select test-type" name="test_type[]" onchange="toggleFields(${instanceId}); updateTestBlocks();">
+                <option value="Images">Images</option>
+                <option value="Transmission">Transmission</option>
+                <option value="Switching Speed">Switching Speed</option>
+                <option value="Haze">Haze</option>
+                <option value="Pretilt">Pretilt</option>
+                <option value="Electrical Checks">Electrical Checks</option>
+                <option value="Microscopy">Microscopy</option>
+                <option value="Interferometry">Interferometry</option>
+                <option value="Reflectance">Reflectance</option>
+                <option value="Custom or New">Custom or New</option>
+                <option value="Failure Analysis Test">Failure Analysis Test</option>
+            </select>
+            <div id="fields-${instanceId}"></div>
+        </div>
+    `;
+    $('#testInstances').append(testInstanceHTML);
+    toggleFields(instanceId);
+    updateTestBlocks();
+}
+
+function removeTestInstance(instanceId) {
+    $(`#instance-${instanceId}`).remove();
+    updateTestBlocks();
+}
+
+function updateTestBlocks() {
+    $('#testBlocks').empty();
+    $('.test-type').each(function() {
+        let testType = $(this).val();
+        let blockHTML = `<div class="test-block">${testType}</div>`;
+        $('#testBlocks').append(blockHTML);
+    });
+}
 
 function toggleFields(instanceId) {
     let testType = $(`#instance-${instanceId} .test-type`).val();
