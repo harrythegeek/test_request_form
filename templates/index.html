@@ -230,8 +230,15 @@ function toggleFields(instanceId) {
             <input type="text" name="voltage_range[]" class="form-control">
             <label class="form-label mt-2">Single Point:</label>
             <input type="text" name="voltage_single_point[]" class="form-control">
-            <label class="form-label mt-2">Sweep:</label>
-            <input type="text" name="voltage_sweep[]" class="form-control">
+
+
+            <label class="form-label">Sweep:</label>
+            <select name="voltage_sweep[]" class="form-select">
+                <option value="">-- Select Sweep Options --</option>
+                <option value="F">F</option>
+                <option value="R">R</option>
+                <option value="F+R">F+R</option>
+            </select>
 
             <h6 class="mt-3">Sample Number</h6>
             <label class="form-label">Number of Cells to be Tested:</label>
