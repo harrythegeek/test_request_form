@@ -23,7 +23,13 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit():
     request_id = str(uuid.uuid4())  # Generate a unique ID for the test request
-    test_instances = request.json.get("test_instances", [])
+    data = request.get_json()  # Get JSON data from request
+
+    batch_id = data.get("batch_id", "")
+    project = data.get("project", "")
+    deadline = data.get("deadline", "")
+    notes = data.get("notes", "")
+    test_instances = data.get("test_instances", [])
 
     if not test_instances:
         return jsonify({"error": "No test instances provided"}), 400
@@ -34,6 +40,10 @@ def submit():
         instance_id = str(uuid.uuid4())  # Unique ID for each test instance
         new_entry = pd.DataFrame({
             "Request ID": [request_id],
+            "Batch ID": [batch_id],
+            "Project": [project],
+            "Deadline": [deadline],
+            "Notes": [notes],
             "Test Type": [instance.get("test_type", "")],
             "Instance ID": [instance_id],
             "Polarisers Type": [instance.get("polarisers_type", "")],
@@ -45,16 +55,15 @@ def submit():
             "Voltage Range": [instance.get("voltage_range", "")],
             "Voltage Single Point": [instance.get("voltage_single_point", "")],
             "Voltage Sweep": [instance.get("voltage_sweep", "")],
-            "Tool Setup": [instance.get("tool_setup", "")],
-            "Tool Angle of Incidence": [instance.get("tool_angle_incidence", "")],
+            "Tool Selection": [instance.get("tool_selection", "")],
             "Sample Number": [instance.get("sample_number", "")],
-            "Cell structure": [instance.get("Cell structure","")],
-            "Notes": [instance.get("notes", "")]
+            "Cell Structure": [instance.get("cell_structure", "")]
         })
         df = pd.concat([df, new_entry], ignore_index=True)
 
     df.to_excel(FILE_NAME, index=False)
     return jsonify({"message": "Test request submitted successfully", "request_id": request_id})
+
 
 
 @app.route('/requests')
