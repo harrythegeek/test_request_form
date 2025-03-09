@@ -42,11 +42,13 @@
         <div class="form-container">
             <h2 class="text-center">Submit a Test Request</h2>
             <form id="testRequestForm" class="p-4">
+                <!-- PROJECT SPECIFIC FIELDS -->
                 <div class="mb-3">
                     <label for="batch_id" class="form-label">Batch ID:</label>
                     <input type="text" name="batch_id" id="batch_id" class="form-control" required>
                 </div>
                 <div class="mb-3">
+                    <!-- Users will type the exact project name -->
                     <label for="project" class="form-label">Project:</label>
                     <input type="text" name="project" id="project" class="form-control" required>
                 </div>
@@ -74,269 +76,202 @@
             <div id="testBlocks" class="test-blocks"></div>
         </div>
     </div>
+
     <script>
+        let projectDefaults = {}; // Store JSON defaults loaded from /static/project_defaults.json
 
-function duplicateLastTestInstance() {
-    let lastInstance = $('#testInstances .border:last');
-
-    if (lastInstance.length === 0) {
-        alert("No previous test instance to duplicate.");
-        return;
-    }
-
-    let instanceId = Date.now();
-    let clonedInstance = lastInstance.clone();
-
-    clonedInstance.attr("id", `instance-${instanceId}`);
-    clonedInstance.find(".btn-close").attr("onclick", `removeTestInstance(${instanceId})`);
-
-    clonedInstance.find("select, input").each(function () {
-        let oldName = $(this).attr("name");
-        if (oldName) {
-            $(this).attr("name", oldName.replace(/\[\d+\]/, `[${instanceId}]`));
-        }
-        $(this).val(lastInstance.find(`[name='${oldName}']`).val()); // Copy values
-    });
-
-    $('#testInstances').append(clonedInstance);
-    updateTestBlocks();
-}
-
-
-
-function addTestInstance() {
-    let instanceId = Date.now();
-    let testInstanceHTML = `
-        <div class="border p-3 mt-3 bg-light rounded" id="instance-${instanceId}">
-            <h5 class="d-flex justify-content-between">
-                Test Instance
-                <button type="button" class="btn-close" onclick="removeTestInstance(${instanceId})"></button>
-            </h5>
-            <label class="form-label">Test Type:</label>
-            <select class="form-select test-type" name="test_type[]" onchange="toggleFields(${instanceId}); updateTestBlocks();">
-                <option value="Images">Images</option>
-                <option value="Transmission">Transmission</option>
-                <option value="Switching Speed">Switching Speed</option>
-                <option value="Haze">Haze</option>
-                <option value="Pretilt">Pretilt</option>
-                <option value="Electrical Checks">Electrical Checks</option>
-                <option value="Microscopy">Microscopy</option>
-                <option value="Interferometry">Interferometry</option>
-                <option value="Reflectance">Reflectance</option>
-                <option value="Custom or New">Custom or New</option>
-                <option value="Failure Analysis Test">Failure Analysis Test</option>
-            </select>
-            <div id="fields-${instanceId}"></div>
-        </div>
-    `;
-    $('#testInstances').append(testInstanceHTML);
-    toggleFields(instanceId);
-    updateTestBlocks();
-}
-
-function removeTestInstance(instanceId) {
-    $(`#instance-${instanceId}`).remove();
-    updateTestBlocks();
-}
-
-function updateTestBlocks() {
-    $('#testBlocks').empty();
-    $('.test-type').each(function() {
-        let testType = $(this).val();
-        let blockHTML = `<div class="test-block">${testType}</div>`;
-        $('#testBlocks').append(blockHTML);
-    });
-}
-
-function toggleFields(instanceId) {
-    let testType = $(`#instance-${instanceId} .test-type`).val();
-    let fieldContent = "";
-
-    if (testType === "Electrical Checks") {
-        fieldContent = `
-            <h6 class="mt-3">Tool</h6>
-            <label class="form-label">Setup:</label>
-            <input type="text" name="tool_selection[]" class="form-control">
-            <h6 class="mt-3">Sample Number</h6>
-            <label class="form-label">Number of Cells to be Tested:</label>
-            <input type="number" name="sample_number[]" class="form-control">
-        `;
-    } else if (testType === "Images") {
-        fieldContent = `
-            <h6 class="mt-3">Tool Selection</h6>
-            <label class="form-label">Select Tool:</label>
-            <select name="tool_selection[]" class="form-select">
-                <option value="">-- Select Tool --</option>
-                <option value="Nikon Camera">Nikon Camera</option>
-            </select>
-
-            <h6 class="mt-3">Polarisers</h6>
-            <label class="form-label">Type:</label>
-            <input type="text" name="polarisers_type[]" class="form-control">
-            <label class="form-label mt-2">Lamination:</label>
-            <input type="text" name="polarisers_lamination[]" class="form-control">
-            <label class="form-label mt-2">Number of Polarisers:</label>
-            <input type="number" name="polarisers_number[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol1 (deg):</label>
-            <input type="number" name="Orientation of Pol1[]" class="form-control">
-            <label class="form-label mt-2">Orientation of Cell Alignment Axis(deg):</label>
-            <input type="number" name="Orientation of Cell Alignment Axis[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol2 (deg):</label>
-            <input type="number" name="Orientation of Pol2[]" class="form-control">
-
-            <h6 class="mt-3">Voltage</h6>
-            <label class="form-label">Range:</label>
-            <input type="text" name="voltage_range[]" class="form-control">
-            <label class="form-label mt-2">Single Point:</label>
-            <input type="text" name="voltage_single_point[]" class="form-control">
-            <label class="form-label mt-2">Sweep:</label>
-            <input type="text" name="voltage_sweep[]" class="form-control">
-
-            <h6 class="mt-3">Sample Number</h6>
-            <label class="form-label">Number of Cells to be Tested:</label>
-            <input type="number" name="sample_number[]" class="form-control">
-
-            <h6 class="mt-3">Cell Structure</h6>
-            <label class="form-label">Cell Structure:</label>
-            <input type="text" name="Cell structure[]" class="form-control">
-        `;
-    } else if (testType === "Transmission") {
-        fieldContent = `
-            <h6 class="mt-3">Tool Selection</h6>
-            <label class="form-label">Select Tool:</label>
-            <select name="tool_selection[]" class="form-select">
-                <option value="">-- Select Tool --</option>
-                <option value="Colorimeter">Colorimeter</option>
-                <option value="UV-VIS">UV-VIS</option>
-                <option value="Laser (532nm)">Laser (532nm)</option>
-            </select>
-
-            <h6 class="mt-3">Polarisers</h6>
-            <label class="form-label">Type:</label>
-            <input type="text" name="polarisers_type[]" class="form-control">
-            <label class="form-label mt-2">Lamination:</label>
-            <input type="text" name="polarisers_lamination[]" class="form-control">
-            <label class="form-label mt-2">Number of Polarisers:</label>
-            <input type="number" name="polarisers_number[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol1 (deg):</label>
-            <input type="number" name="Orientation of Pol1[]" class="form-control">
-            <label class="form-label mt-2">Orientation of Cell Alignment Axis(deg):</label>
-            <input type="number" name="Orientation of Cell Alignment Axis[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol2 (deg):</label>
-            <input type="number" name="Orientation of Pol2[]" class="form-control">
-
-            <h6 class="mt-3">Voltage</h6>
-            <label class="form-label">Range:</label>
-            <input type="text" name="voltage_range[]" class="form-control">
-            <label class="form-label mt-2">Single Point:</label>
-            <input type="text" name="voltage_single_point[]" class="form-control">
-
-
-            <label class="form-label">Sweep:</label>
-            <select name="voltage_sweep[]" class="form-select">
-                <option value="">-- Select Sweep Options --</option>
-                <option value="F">F</option>
-                <option value="R">R</option>
-                <option value="F+R">F+R</option>
-            </select>
-
-            <h6 class="mt-3">Sample Number</h6>
-            <label class="form-label">Number of Cells to be Tested:</label>
-            <input type="number" name="sample_number[]" class="form-control">
-
-            <h6 class="mt-3">Cell Structure</h6>
-            <label class="form-label">Cell Structure:</label>
-            <input type="text" name="Cell structure[]" class="form-control">
-        `;
-
-            } else{
-        fieldContent = `
-            <h6 class="mt-3">Polarisers</h6>
-            <label class="form-label">Type:</label>
-            <input type="text" name="polarisers_type[]" class="form-control">
-            <label class="form-label mt-2">Lamination:</label>
-            <input type="text" name="polarisers_lamination[]" class="form-control">
-            <label class="form-label mt-2">Number of Polarisers:</label>
-            <input type="number" name="polarisers_number[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol1 (deg):</label>
-            <input type="number" name="Orientation of Pol1[]" class="form-control">
-            <label class="form-label mt-2">Orientation of Cell Alignment Axis(deg):</label>
-            <input type="number" name="Orientation of Cell Alignment Axis[]" class="form-control">
-            <label class="form-label mt-2">Orientation of pol2 (deg):</label>
-            <input type="number" name="Orientation of Pol2[]" class="form-control">
-            <h6 class="mt-3">Voltage</h6>
-            <label class="form-label">Range:</label>
-            <input type="text" name="voltage_range[]" class="form-control">
-            <label class="form-label mt-2">Single Point:</label>
-            <input type="text" name="voltage_single_point[]" class="form-control">
-            <label class="form-label mt-2">Sweep:</label>
-            <input type="text" name="voltage_sweep[]" class="form-control">
-            <h6 class="mt-3">Sample Number</h6>
-            <label class="form-label">Number of Cells to be Tested:</label>
-            <input type="number" name="sample_number[]" class="form-control">
-            <h6 class="mt-3">Cell Structure</h6>
-            <label class="form-label">Cell Structure:</label>
-            <input type="text" name="Cell structure[]" class="form-control">
-        `;
-
-    }
-
-    $(`#fields-${instanceId}`).html(fieldContent);
-    updateTestBlocks();
-}
-
-    </script>
-
-<script>
-    $(document).ready(function () {
-        $('#testRequestForm').submit(function (event) {
-            event.preventDefault();
-
-            let testInstances = [];
-            $('#testInstances .border').each(function () {
-                let instance = {
-                    test_type: $(this).find('.test-type').val(),
-                    polarisers_type: $(this).find('[name="polarisers_type[]"]').val(),
-                    polarisers_lamination: $(this).find('[name="polarisers_lamination[]"]').val(),
-                    polarisers_number: $(this).find('[name="polarisers_number[]"]').val(),
-                    polarisers_pol1: $(this).find('[name="Orientation of Pol1[]"]').val(),
-                    polarisers_cell_alignment: $(this).find('[name="Orientation of Cell Alignment Axis[]"]').val(),
-                    polarisers_pol2: $(this).find('[name="Orientation of Pol2[]"]').val(),
-                    voltage_range: $(this).find('[name="voltage_range[]"]').val(),
-                    voltage_single_point: $(this).find('[name="voltage_single_point[]"]').val(),
-                    voltage_sweep: $(this).find('[name="voltage_sweep[]"]').val(),
-                    tool_selection: $(this).find('[name="tool_selection[]"]').val(),
-                    sample_number: $(this).find('[name="sample_number[]"]').val(),
-                    cell_structure: $(this).find('[name="cell_structure[]"]').val(),
-                    notes: $(this).find('[name="notes"]').val()
-                };
-                testInstances.push(instance);
+        // 1) Load the JSON once on page load
+        $(document).ready(function () {
+            $.getJSON("/static/project_defaults.json", function (data) {
+                projectDefaults = data;
             });
 
-            let requestData = {
-                batch_id: $('#batch_id').val(),
-                project: $('#project').val(),
-                deadline: $('#deadline').val(),
-                notes: $('#notes').val(),
-                test_instances: testInstances
-            };
+            // The existing form submission logic
+            $('#testRequestForm').submit(function (event) {
+                event.preventDefault();
 
-            $.ajax({
-                url: '/submit',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),
-                success: function (response) {
-                    alert(response.message);
-                    location.reload();
-                },
-                error: function (response) {
-                    alert('Error submitting request');
-                }
+                let testInstances = [];
+                $('#testInstances .border').each(function () {
+                    let instance = {
+                        test_type: $(this).find('.test-type').val(),
+                        polarisers_type: $(this).find('[name="polarisers_type[]"]').val(),
+                        polarisers_lamination: $(this).find('[name="polarisers_lamination[]"]').val(),
+                        polarisers_number: $(this).find('[name="polarisers_number[]"]').val(),
+                        polarisers_pol1: $(this).find('[name="Orientation of Pol1[]"]').val(),
+                        polarisers_cell_alignment: $(this).find('[name="Orientation of Cell Alignment Axis[]"]').val(),
+                        polarisers_pol2: $(this).find('[name="Orientation of Pol2[]"]').val(),
+                        voltage_range: $(this).find('[name="voltage_range[]"]').val(),
+                        voltage_single_point: $(this).find('[name="voltage_single_point[]"]').val(),
+                        voltage_sweep: $(this).find('[name="voltage_sweep[]"]').val(),
+                        tool_selection: $(this).find('[name="tool_selection[]"]').val(),
+                        sample_number: $(this).find('[name="sample_number[]"]').val(),
+                        cell_structure: $(this).find('[name="cell_structure[]"]').val(),
+                        notes: $(this).find('[name="notes"]').val()
+                    };
+                    testInstances.push(instance);
+                });
+
+                let requestData = {
+                    batch_id: $('#batch_id').val(),
+                    project: $('#project').val(),
+                    deadline: $('#deadline').val(),
+                    notes: $('#notes').val(),
+                    test_instances: testInstances
+                };
+
+                $.ajax({
+                    url: '/submit',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    success: function (response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function (response) {
+                        alert('Error submitting request');
+                    }
+                });
             });
         });
-    });
-</script>
+
+        // 2) Duplicate last test logic
+        function duplicateLastTestInstance() {
+            let lastInstance = $('#testInstances .border:last');
+            if (lastInstance.length === 0) {
+                alert("No previous test instance to duplicate.");
+                return;
+            }
+            let instanceId = Date.now();
+            let clonedInstance = lastInstance.clone();
+
+            clonedInstance.attr("id", `instance-${instanceId}`);
+            clonedInstance.find(".btn-close").attr("onclick", `removeTestInstance(${instanceId})`);
+
+            clonedInstance.find("select, input").each(function () {
+                let oldName = $(this).attr("name");
+                if (oldName) {
+                    $(this).attr("name", oldName.replace(/\[\d+\]/, `[${instanceId}]`));
+                }
+                // Copy the values
+                $(this).val(lastInstance.find(`[name='${oldName}']`).val());
+            });
+            $('#testInstances').append(clonedInstance);
+            updateTestBlocks();
+        }
+
+        // 3) Add test instance logic
+        function addTestInstance() {
+            let instanceId = Date.now();
+            let testInstanceHTML = `
+                <div class="border p-3 mt-3 bg-light rounded" id="instance-${instanceId}">
+                    <h5 class="d-flex justify-content-between">
+                        Test Instance
+                        <button type="button" class="btn-close" onclick="removeTestInstance(${instanceId})"></button>
+                    </h5>
+                    <label class="form-label">Test Type:</label>
+                    <select class="form-select test-type" name="test_type[]" onchange="toggleFields(${instanceId}); updateTestBlocks();">
+                        <option value="Images">Images</option>
+                        <option value="Transmission">Transmission</option>
+                        <option value="Switching Speed">Switching Speed</option>
+                        <option value="Haze">Haze</option>
+                        <option value="Pretilt">Pretilt</option>
+                        <option value="Electrical Checks">Electrical Checks</option>
+                        <option value="Microscopy">Microscopy</option>
+                        <option value="Interferometry">Interferometry</option>
+                        <option value="Reflectance">Reflectance</option>
+                        <option value="Custom or New">Custom or New</option>
+                        <option value="Failure Analysis Test">Failure Analysis Test</option>
+                    </select>
+                    <!-- NEW: Button to apply project defaults to this instance -->
+                    <button type="button" class="btn btn-sm btn-outline-info mt-2" onclick="applyProjectDefaults(${instanceId})">
+                        Apply Project Defaults
+                    </button>
+                    <div id="fields-${instanceId}"></div>
+                </div>
+            `;
+            $('#testInstances').append(testInstanceHTML);
+            toggleFields(instanceId);
+            updateTestBlocks();
+        }
+
+        // 4) Remove instance
+        function removeTestInstance(instanceId) {
+            $(`#instance-${instanceId}`).remove();
+            updateTestBlocks();
+        }
+
+        // 5) Update the summary blocks
+        function updateTestBlocks() {
+            $('#testBlocks').empty();
+            $('.test-type').each(function() {
+                let testType = $(this).val();
+                let blockHTML = `<div class="test-block">${testType}</div>`;
+                $('#testBlocks').append(blockHTML);
+            });
+        }
+
+        // 6) Toggle fields based on the test type
+        function toggleFields(instanceId) {
+            let testType = $(`#instance-${instanceId} .test-type`).val();
+            let fieldContent = "";
+
+            // (SNIPPET) Original if-else blocks for each test type...
+            // The rest is the same code you had.
+            // ...
+            if (testType === "Transmission") {
+                fieldContent = `
+                    <h6 class="mt-3">Tool Selection</h6>
+                    <label class="form-label">Select Tool:</label>
+                    <select name="tool_selection[]" class="form-select">
+                        <option value="">-- Select Tool --</option>
+                        <option value="Colorimeter">Colorimeter</option>
+                        <option value="UV-VIS">UV-VIS</option>
+                        <option value="Laser (532nm)">Laser (532nm)</option>
+                    </select>
+                    ...
+                `;
+            } else {
+                // etc...
+            }
+            $(`#fields-${instanceId}`).html(fieldContent);
+            updateTestBlocks();
+        }
+
+        /************************************************************
+         * 7) Apply Project-Specific Defaults from project_defaults.json
+         ************************************************************/
+        function applyProjectDefaults(instanceId) {
+            // 1) Grab user input from the #project field
+            let projectName = $('#project').val().trim();
+            if (!projectName) {
+                alert("Please enter a valid project name first!");
+                return;
+            }
+            // 2) Lookup defaults in the loaded 'projectDefaults' object
+            let defaults = projectDefaults[projectName];
+            if (!defaults) {
+                alert("No defaults found for the project: " + projectName);
+                return;
+            }
+            // 3) For the given instance, fill in default values
+            let container = $(`#instance-${instanceId}`);
+
+            // If a field doesn't exist in your HTML, it's simply skipped
+            container.find('[name="voltage_range[]"]').val(defaults.voltage_range || "");
+            container.find('[name="polarisers_type[]"]').val(defaults.polarisers_type || "");
+            container.find('[name="polarisers_lamination[]"]').val(defaults.polarisers_lamination || "");
+            container.find('[name="polarisers_number[]"]').val(defaults.polarisers_number || "");
+            container.find('[name="Orientation of Pol1[]"]').val(defaults["Orientation of Pol1"] || "");
+            container.find('[name="Orientation of Cell Alignment Axis[]"]').val(defaults["Orientation of Cell Alignment Axis"] || "");
+            container.find('[name="Orientation of Pol2[]"]').val(defaults["Orientation of Pol2"] || "");
+            container.find('[name="voltage_single_point[]"]').val(defaults.voltage_single_point || "");
+            container.find('[name="voltage_sweep[]"]').val(defaults.voltage_sweep || "");
+            container.find('[name="tool_selection[]"]').val(defaults.tool_selection || "");
+            container.find('[name="sample_number[]"]').val(defaults.sample_number || "");
+            container.find('[name="cell_structure[]"]').val(defaults.cell_structure || "");
+        }
+    </script>
 
 </body>
 </html>

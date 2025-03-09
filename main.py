@@ -1,7 +1,12 @@
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import os
 import uuid
+import webbrowser
+
+
+
 
 app = Flask(__name__)
 FILE_NAME = "test_requests.xlsx"
@@ -73,4 +78,8 @@ def view_requests():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+
+        from threading import Timer
+        Timer(1, lambda: webbrowser.open("http://127.0.0.1:5000/")).start()
+        app.run(debug=False)
+
