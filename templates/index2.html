@@ -1,0 +1,19 @@
+<!-- save this as templates/index.html if using Flask’s default template folder -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Form</title>
+</head>
+<body>
+  <h1>Enter Data</h1>
+  <form method="POST" action="/submit">
+    <label for="field1">Field 1:</label>
+    <input type="text" id="field1" name="field1">
+
+    <label for="field2">Field 2:</label>
+    <input type="text" id="field2" name="field2">
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
