@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template
 import pyodbc
 
+print(pyodbc.drivers())
+
 app = Flask(__name__)
 
 # 1. Display the form at the root path
@@ -19,12 +21,12 @@ def submit():
     # 3. Connect to your SQL Server database:
     #    Adjust DRIVER, SERVER, DATABASE, UID, PWD, etc. as needed.
     connection_string = (
-        "DRIVER={ODBC Driver 17 for SQL Server};"
-        "SERVER=FETRI\SQLFETRI;"  # e.g. DESKTOP-ABC\SQLEXPRESS
-        "DATABASE=YourDatabaseName;"
-        "UID=YourUserName;"  # Omit if using Trusted_Connection
-        "PWD=YourPassword;"  # Omit if using Trusted_Connection
-        "Trusted_Connection=no;" # or yes, depending on your setup
+        "DRIVER={SQL Server};"
+        "SERVER=FETRI\\SQLFETRI;"  # e.g. DESKTOP-ABC\SQLEXPRESS
+        "DATABASE=test;"
+        "UID=Harry.Delalis@flexenable.com;"  # Omit if using Trusted_Connection
+        "PWD=70578032xX;"  # Omit if using Trusted_Connection
+        "Trusted_Connection=yes;" # or yes, depending on your setup
     )
 
     try:
@@ -46,4 +48,4 @@ def submit():
 
 if __name__ == '__main__':
     # 5. Run the Flask development server
-    app.run(debug=True)
+    app.run(debug=False)
