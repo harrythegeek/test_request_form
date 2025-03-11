@@ -1,4 +1,5 @@
 import pyodbc
+"exxample"
 
 driver = "{SQL Server}"
 server = "FETRI\\FETRISQL,1433;"
