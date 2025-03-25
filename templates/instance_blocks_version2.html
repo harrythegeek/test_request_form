@@ -427,6 +427,19 @@
     // Builds the inner settings HTML for a given test type
     function getSettingsHTML(testType) {
       return `
+        <h3>Construction</h3>
+        <div class="form-group">
+          <label>Type:</label>
+          <select id="constructionDropdown">
+            <option value="">--Select--</option>
+            <option value="Single Cell">Single Cell</option>
+            <option value="Doublet Cell">Doublet Cell</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+    <button onclick="saveConstruction()">Save Construction</button>
+      
         <h3>Polarisers</h3>
         <div class="form-group">
           <label>Type:</label>
@@ -487,41 +500,41 @@
 
     // Adds a new block to the container example
 
-    function addTest() {
-    const container = document.getElementById("test-container");
-    const testType = document.getElementById("test-type").value;
-    if (!testType) return;
+  function addTest() {
+  const container = document.getElementById("test-container");
+  const testType = document.getElementById("test-type").value;
+  if (!testType) return;
 
-    // Instead of testCount++, compute the ID from the container's current children:
-    const nextID = container.children.length + 1;
+  // Figure out next index:
+  const nextID = container.children.length + 1;
 
-    let headerText = "";
-    if (testType === "switching") {
-      headerText = "Switching Speed";
-    } else if (testType === "transmission") {
-      headerText = "Transmission";
-    } else {
-      headerText = "Images";
-    }
+  let headerText = "";
+  if (testType === "switching") headerText = "Switching Speed";
+  else if (testType === "transmission") headerText = "Transmission";
+  else headerText = "Images";
 
-    // e.g., "1 Switching Speed", "2 Transmission", etc.
-    const fullName = nextID + " " + headerText;
+  const fullName = nextID + " " + headerText;
 
-    const newBlock = document.createElement("div");
-    newBlock.setAttribute("data-test-type", testType);
-
-    newBlock.classList.add("container");
+  // Build the block
+  const newBlock = document.createElement("div");
+  newBlock.classList.add("container");
+  
+  // Add a <div> for showing the chosen construction
     newBlock.innerHTML = `
-      <button class="delete-btn" onclick="deleteTest(this)">X</button>
-      <div class="header">${fullName}</div>
-      <button class="add-btn" style="width: 100%; font-size:14px; padding: 8px;"
-              onclick="showSettingsPanel('${testType}', '${fullName}')">
-        Show Settings
-      </button>
-    `;
+  <button class="delete-btn" onclick="this.parentElement.remove()">X</button>
+  <h3 class="construction-info" style="font-weight: bold; margin-bottom: 8px;">
+    (No Construction Selected)
+  </h3>
+  <div class="header">${fullName}</div>
+  <button class="add-btn" style="width: 100%; font-size:14px; padding: 8px;"
+          onclick="showSettingsPanel('${testType}', '${fullName}', ${container.children.length})">
+    Show Settings
+  </button>
+`;
 
-    container.appendChild(newBlock);
+  container.appendChild(newBlock);
 }
+
 
     function deleteTest(el) {
       // Remove the test block
@@ -566,25 +579,60 @@
 
 
     // Displays the settings panel for the selected test type
+    let currentIndex = -1; // store which block is open
 
-    function showSettingsPanel(testType, fullName) {
+    function showSettingsPanel(testType, fullName, blockIndex) {
+      currentIndex = blockIndex;  // remember which block the user is editing
+
+      const panel = document.getElementById("globalSettingsPanel");
       const content = document.getElementById("settingsContent");
-      let headingText = fullName; // the full name includes the test ID and type
+
       const settingsHTML = `
-        <h2 style="margin-top: 0;">${headingText}</h2>
+        <h2 style="margin-top: 0;">${fullName}</h2>
         ${getSettingsHTML(testType)}
       `;
       content.innerHTML = settingsHTML;
+      panel.style.display = "block";
 
-
-      // Only toggle the inner panel content so that the heading stays visible
       document.getElementById("panelContent").style.display = "block";
+
+
+
     }
 
     // Hides the settings panel content (heading remains visible)
     function closeSettingsPanel() {
       document.getElementById("panelContent").style.display = "none";
     }
+
+    function saveConstruction() {
+    // If none open, do nothing
+    if (currentIndex < 0) return;
+
+    const dropdown = document.getElementById("constructionDropdown");
+    const selectedValue = dropdown.value;
+
+    // Access the correct block from #test-container
+    const container = document.getElementById("test-container");
+    const blocks = container.children;
+
+    // If the user has removed blocks, or the index is invalid, do a safety check:
+    if (!blocks[currentIndex]) {
+      alert("Block no longer exists.");
+      return;
+    }
+
+    // Update the .construction-info text
+    const constructionInfo = blocks[currentIndex].querySelector(".construction-info");
+    if (selectedValue) {
+      constructionInfo.textContent = "Construction: " + selectedValue;
+    } else {
+      constructionInfo.textContent = "(No Construction Selected)";
+    }
+}
+
+
+
   </script>
 </body>
 </html>
