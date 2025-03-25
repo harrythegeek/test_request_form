@@ -1,10 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test Instances</title>
+  <style>
+    /* Body as horizontal flex container for left + center columns */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+
+
+    /* Left column: Test Information */
+    .left-col {
+      width: 420px;           /* enough room for your form container */
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .left-col::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #ddd;
+      /* This places the line 35px outside the right edge of .left-col */
+      right: -35px;
+    }
+
+    /* Center column: holds controls + blocks with extra margin on the right */
+    .center-col {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      margin-right: 360px; /* Reserve space for the fixed panel */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .center-col::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #ddd;
+      right: 30px; /* draws the line 30px in from the right edge */
+    }
+
+    /* The Test Information box */
+    .form-container {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+    }
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Controls (dropdown + Add Test) at the bottom of left-col */
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Test Instances Container (the blocks) */
+    .container-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* Each test block */
+    .container {
+      width: 350px;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .header {
+      background-color: gray;
+      padding: 10px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .delete-btn {
+      background-color: red;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    .arrow-btn {
+      position: absolute;
+      top: 50%;
+      right: -20px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #2C3E50;
+    }
+    .arrow-btn:hover {
+      color: #34495E;
+    }
+    .add-btn {
+      background-color: #34495E;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 200px;
+      text-align: center;
+    }
+
+    /* Custom dropdown for selecting test type */
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-btn {
+      background-color: #34495E;
+      color: white;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 200px;
+      text-align: center;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      width: 200px;
+      border-radius: 6px;
+      z-index: 1000;
+    }
+    .dropdown-content div {
+      padding: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .dropdown-content div:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* The fixed settings panel on the right */
+    .settings-panel {
+      /* No longer toggling the whole container */
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      z-index: 9999;
+    }
+    .settings-panel .close-panel {
+      background-color: red;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+    }
+    .settings-panel h3 {
+      margin-bottom: 10px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      font-size: 16px;
+    }
+    .settings-panel .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .settings-panel .form-group label {
+      font-weight: normal !important;
+      flex: 1;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+    .settings-panel .form-group input,
+    .settings-panel .form-group select,
+    .settings-panel .form-group textarea {
+      flex: 2;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .settings-panel textarea {
+      width: 100%;
+      resize: none;
+      height: 60px;
+    }
+
+    .load-template-btn {
+      background-color: #3498db; /* A modern shade of blue */
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 220px;
+      margin-top: 10px;
+      text-align: left;
+}
+
+  </style>
+
 </head>
 <body>
-$END$
+
+
+  <!-- Left column: Test Information and controls -->
+  <div class="left-col">
+    <div style="
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 1em;
+      margin-bottom: 1em;
+      text-align: center;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;">
+      <h2 style="margin: 0;">Test Request</h2>
+    </div>
+
+    <div class="form-container">
+      <h2 style="text-align: center; margin-bottom: 15px;">Test Information</h2>
+      <div class="form-group">
+        <label for="project">Project Name:</label>
+        <input type="text" id="project" placeholder="Enter project name" />
+      </div>
+      <div class="form-group">
+        <label for="engineer">Assigned Test Engineer:</label>
+        <select id="engineer">
+          <option value="HD">HD</option>
+          <option value="MP">MP</option>
+          <option value="DL">DL</option>
+          <option value="MW">MW</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="deadline">Deadline:</label>
+        <input type="date" id="deadline" />
+      </div>
+      <div class="form-group">
+        <label for="batch">Batch Number:</label>
+        <input type="text" id="batch" placeholder="Enter batch number" />
+      </div>
+      <div class="form-group">
+        <label for="LC mode">LC mode:</label>
+        <input type="text" id="LC mode" placeholder="Enter LC mode" />
+      </div>
+
+    </div>
+    <!-- Controls (dropdown + Add Test) below the form -->
+    <div class="controls">
+      <div class="custom-dropdown">
+        <button class="dropdown-btn" onclick="toggleDropdown()">Select Test ▼</button>
+        <div class="dropdown-content" id="dropdown-menu">
+          <div onclick="setDropdownValue('switching')">Switching Speed</div>
+          <div onclick="setDropdownValue('transmission')">Transmission</div>
+          <div onclick="setDropdownValue('images')">Images</div>
+        </div>
+      </div>
+      <input type="hidden" id="test-type" value="" />
+      <button class="add-btn" onclick="addTest()">Add Test</button>
+      
+    </div>
+    <!-- Add the Load Template Test Plan button underneath the controls -->
+    <div style="
+    padding: 1em;
+    margin-top: 1em;
+    text-align: center;
+    ">
+    <button
+      style="
+        width: 200px;
+        border: none;
+        background-color: #3498db;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-left: -20px;
+        margin-right: 160px;
+        ">
+      Load Template Test
+    </button>
+  </div>
+
+
+
+
+  </div>
+
+  <!-- Center column: Test Plan and Blocks -->
+  <div class="center-col">
+    <div style="
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 1em;
+      margin-bottom: 1em;
+      text-align: center;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;">
+      <h2 style="margin: 0;">Test Plan</h2>
+    </div>
+    <!-- Test Instances Container -->
+    <div class="container-wrapper" id="test-container"></div>
+  </div>
+
+  <!-- Right column: Test Settings (always-visible heading, toggled content below) -->
+  <div style="position: fixed; top: 20px; right: 20px; width: 320px;">
+    <!-- Always-visible heading with high z-index -->
+    <div style="
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 1em;
+      margin-bottom: 1em;
+      text-align: center;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      z-index: 10000;">
+      <h2 style="margin: 0;">Test Settings</h2>
+    </div>
+    <!-- Toggled panel content wrapper -->
+    <div class="settings-panel" id="globalSettingsPanel">
+      <div id="panelContent" style="display: none;">
+        <button class="close-panel" onclick="closeSettingsPanel()">X</button>
+        <div id="settingsContent"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    // Toggles the test dropdown
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown-menu");
+      dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    }
+
+    // Sets the test type from dropdown
+    function setDropdownValue(value) {
+      const btn = document.querySelector(".dropdown-btn");
+      if (value === "switching") {
+        btn.innerText = "Switching Speed ▼";
+      } else if (value === "transmission") {
+        btn.innerText = "Transmission ▼";
+      } else {
+        btn.innerText = "Images ▼";
+      }
+      document.getElementById("test-type").value = value;
+      document.getElementById("dropdown-menu").style.display = "none";
+    }
+
+    // Builds the inner settings HTML for a given test type
+    function getSettingsHTML(testType) {
+      return `
+        <h3>Polarisers</h3>
+        <div class="form-group">
+          <label>Type:</label>
+          <select>
+            <option>Normal</option>
+            <option>High Contrast</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lamination:</label>
+          <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+        </div>
+        <div class="form-group">
+          <label>Orientation of pol1:</label>
+          <input type="text" value="0deg" />
+        </div>
+        <div class="form-group">
+          <label>Orientation of cell:</label>
+          <input type="text" value="45deg" />
+        </div>
+        <div class="form-group">
+          <label>Orientation of pol2:</label>
+          <input type="text" value="90deg" />
+        </div>
+
+        <h3>Voltage</h3>
+        <div class="form-group">
+          <label>Range:</label>
+          <input type="text" value="0V - 50V" />
+        </div>
+        <div class="form-group">
+          <label>Single Point:</label>
+          <input type="text" value="30V" />
+        </div>
+        <div class="form-group">
+          <label>Sweep:</label>
+          <input type="text" value="Yes" />
+        </div>
+
+        <h3>Tool</h3>
+        <div class="form-group">
+          <label>Setup:</label>
+          <input type="text" value="Optical Table" />
+        </div>
+        <div class="form-group">
+          <label>Angle of incidence:</label>
+          <input type="text" value="Off-axis" />
+        </div>
+
+        <h3>Notes</h3>
+        <div class="form-group">
+          <textarea placeholder="Add any comments or additional tests here"></textarea>
+        </div>
+      `;
+    }
+
+
+
+    // Adds a new block to the container
+
+    function addTest() {
+    const container = document.getElementById("test-container");
+    const testType = document.getElementById("test-type").value;
+    if (!testType) return;
+
+    // Instead of testCount++, compute the ID from the container's current children:
+    const nextID = container.children.length + 1;
+
+    let headerText = "";
+    if (testType === "switching") {
+      headerText = "Switching Speed";
+    } else if (testType === "transmission") {
+      headerText = "Transmission";
+    } else {
+      headerText = "Images";
+    }
+
+    // e.g., "1 Switching Speed", "2 Transmission", etc.
+    const fullName = nextID + " " + headerText;
+
+    const newBlock = document.createElement("div");
+    newBlock.setAttribute("data-test-type", testType);
+
+    newBlock.classList.add("container");
+    newBlock.innerHTML = `
+      <button class="delete-btn" onclick="deleteTest(this)">X</button>
+      <div class="header">${fullName}</div>
+      <button class="add-btn" style="width: 100%; font-size:14px; padding: 8px;"
+              onclick="showSettingsPanel('${testType}', '${fullName}')">
+        Show Settings
+      </button>
+    `;
+
+    container.appendChild(newBlock);
+}
+
+    function deleteTest(el) {
+      // Remove the test block
+      el.parentElement.remove();
+      // Renumber all test blocks after deletion
+      renumberTests();
+    }
+
+    function renumberTests() {
+      const container = document.getElementById("test-container");
+      // Iterate over each test block (child element)
+      Array.from(container.children).forEach((child, index) => {
+        const newNumber = index + 1;
+        // Retrieve the test type from the data attribute
+        const testType = child.getAttribute("data-test-type");
+        let headerText = "";
+        if (testType === "switching") {
+          headerText = "Switching Speed";
+        } else if (testType === "transmission") {
+          headerText = "Transmission";
+        } else {
+          headerText = "Images";
+        }
+        const fullName = newNumber + " " + headerText;
+        // Update the header text of the block
+        child.querySelector(".header").innerText = fullName;
+        // Update the "Show Settings" button's onclick to include the new fullName
+        const showBtn = child.querySelector(".add-btn");
+        showBtn.setAttribute("onclick", `showSettingsPanel('${testType}', '${fullName}')`);
+      });
+    }
+
+
+    function loadTemplateTestPlan() {
+      // Your template-loading logic here. For example:
+      console.log("Loading template test plan...");
+      // Optionally, insert template content into a specific container.
+    }
+
+
+
+
+
+    // Displays the settings panel for the selected test type
+
+    function showSettingsPanel(testType, fullName) {
+      const content = document.getElementById("settingsContent");
+      let headingText = fullName; // the full name includes the test ID and type
+      const settingsHTML = `
+        <h2 style="margin-top: 0;">${headingText}</h2>
+        ${getSettingsHTML(testType)}
+      `;
+      content.innerHTML = settingsHTML;
+
+
+      // Only toggle the inner panel content so that the heading stays visible
+      document.getElementById("panelContent").style.display = "block";
+    }
+
+    // Hides the settings panel content (heading remains visible)
+    function closeSettingsPanel() {
+      document.getElementById("panelContent").style.display = "none";
+    }
+  </script>
 </body>
 </html>
