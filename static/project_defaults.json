@@ -1,0 +1,30 @@
+{
+  "Project A": {
+    "voltage_range": "0-5V",
+    "polarisers_type": "Default Type A",
+    "polarisers_lamination": "LamA",
+    "polarisers_number": 2,
+    "Orientation of Pol1": 45,
+    "Orientation of Cell Alignment Axis": 90,
+    "Orientation of Pol2": 135,
+    "voltage_single_point": "2.5V",
+    "voltage_sweep": "F+R",
+    "tool_selection": "Nikon Camera",
+    "sample_number": 5,
+    "cell_structure": "Standard"
+  },
+  "Project B": {
+    "voltage_range": "1-10V",
+    "polarisers_type": "Default Type B",
+    "polarisers_lamination": "LamB",
+    "polarisers_number": 3,
+    "Orientation of Pol1": 60,
+    "Orientation of Cell Alignment Axis": 120,
+    "Orientation of Pol2": 180,
+    "voltage_single_point": "3V",
+    "voltage_sweep": "F",
+    "tool_selection": "UV-VIS",
+    "sample_number": 10,
+    "cell_structure": "Custom"
+  }
+}
