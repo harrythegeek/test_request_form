@@ -327,6 +327,8 @@
           <div onclick="setDropdownValue('images')">Images</div>
           <div onclick="setDropdownValue('electrical')">Electrical</div>
           <div onclick="setDropdownValue('haze')">Haze</div>
+          <div onclick="setDropdownValue('uvvis')">UV-VIS</div>
+
         </div>
       </div>
       <input type="hidden" id="test-type" value="" />
@@ -442,7 +444,8 @@
         btn.innerText = "Electrical ▼";
       } else if (value === "haze") {
         btn.innerText = "Haze ▼";
-
+      } else if (value === "uvvis") {
+        btn.innerText = "UV-VIS ▼";
       }else {
         btn.innerText = "Images ▼";
       }
@@ -479,6 +482,86 @@
         <textarea placeholder="Add any comments or additional tests here"></textarea>
       </div>
 
+    `;
+
+  } else if (testType === "uvvis"){
+    // Return the full settings for other test types
+    return `
+      <h3>Construction</h3>
+      <div class="form-group">
+        <label>Type:</label>
+        <select id="constructionDropdown">
+          <option value="">--Select--</option>
+          <option value="Single Cell">Single Cell</option>
+          <option value="Double Cell">Double Cell</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button onclick="saveConstruction()">Save Construction</button>
+
+      <h3>Tool settings</h3>
+      <div class="form-group">
+        <label>Range:</label>
+        <input type="text" value="270-800nm" />
+      </div>
+           <div class="form-group">
+        <label>Step:</label>
+        <input type="text" value="1nm" />
+      </div>
+      
+      <h3>Polarisers</h3>
+      <div class="form-group">
+        <label>Type:</label>
+        <select>
+          <option>Normal</option>
+          <option>High Contrast</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Lamination:</label>
+        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of pol1:</label>
+        <input type="text" value="0deg" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of cell:</label>
+        <input type="text" value="45deg" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of pol2:</label>
+        <input type="text" value="90deg" />
+      </div>
+
+      <h3>Voltage</h3>
+      <div class="form-group">
+        <label>Range:</label>
+        <input type="text" value="0V - 50V" />
+      </div>
+      <div class="form-group">
+        <label>Single Point:</label>
+        <input type="text" value="30V" />
+      </div>
+      <div class="form-group">
+        <label>Sweep:</label>
+        <input type="text" value="Yes" />
+      </div>
+
+      <h3>Tool</h3>
+      <div class="form-group">
+        <label>Setup:</label>
+        <input type="text" value="Perkin Elmer" />
+      </div>
+      <div class="form-group">
+        <label>Angle of incidence:</label>
+        <input type="text" value="Off-axis" />
+      </div>
+
+      <h3>Notes</h3>
+      <div class="form-group">
+        <textarea placeholder="Add any comments or additional tests here"></textarea>
+      </div>
     `;
 
   } else if (testType === "haze"){
@@ -646,6 +729,7 @@
   else if (testType === "images") headerText = "Images";
   else if (testType === "electrical") headerText = "Electrical";
   else if (testType === "haze") headerText = "Haze";
+  else if (testType === "uvvis") headerText = "UV-VIS";
 
   const fullName = nextID + " " + headerText;
 
@@ -693,6 +777,7 @@
     else if (testType === "images") headerText = "Images";
     else if (testType === "electrical") headerText = "Electrical";
     else if (testType === "haze") headerText = "Haze";
+    else if (testType === "uvvis") headerText = "UV-VIS";
 
     const fullName = newNumber + " " + headerText;
     child.querySelector(".header").innerText = fullName;
@@ -733,6 +818,7 @@
 
 
     }
+
   function clearAllTests() {
   const container = document.getElementById("test-container");
   container.innerHTML = ""; // Remove all blocks
