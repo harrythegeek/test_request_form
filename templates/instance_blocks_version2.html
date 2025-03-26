@@ -326,6 +326,7 @@
           <div onclick="setDropdownValue('transmission')">Transmission</div>
           <div onclick="setDropdownValue('images')">Images</div>
           <div onclick="setDropdownValue('electrical')">Electrical</div>
+          <div onclick="setDropdownValue('haze')">Haze</div>
         </div>
       </div>
       <input type="hidden" id="test-type" value="" />
@@ -420,6 +421,9 @@
         btn.innerText = "Transmission ▼";
       } else if (value === "electrical") {
         btn.innerText = "Electrical ▼";
+      } else if (value === "haze") {
+        btn.innerText = "Haze ▼";
+
       }else {
         btn.innerText = "Images ▼";
       }
@@ -457,6 +461,80 @@
       </div>
 
     `;
+
+  } else if (testType === "haze"){
+    // Return the full settings for other test types
+    return `
+      <h3>Construction</h3>
+      <div class="form-group">
+        <label>Type:</label>
+        <select id="constructionDropdown">
+          <option value="">--Select--</option>
+          <option value="Single Cell">Single Cell</option>
+          <option value="Double Cell">Double Cell</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button onclick="saveConstruction()">Save Construction</button>
+      
+      <h3>Polarisers</h3>
+      <div class="form-group">
+        <label>Type:</label>
+        <select>
+          <option>Normal</option>
+          <option>High Contrast</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Lamination:</label>
+        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of pol1:</label>
+        <input type="text" value="0deg" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of cell:</label>
+        <input type="text" value="45deg" />
+      </div>
+      <div class="form-group">
+        <label>Orientation of pol2:</label>
+        <input type="text" value="90deg" />
+      </div>
+
+      <h3>Voltage</h3>
+      <div class="form-group">
+        <label>Range:</label>
+        <input type="text" value="0V - 50V" />
+      </div>
+      <div class="form-group">
+        <label>Single Point:</label>
+        <input type="text" value="30V" />
+      </div>
+      <div class="form-group">
+        <label>Sweep:</label>
+        <input type="text" value="Yes" />
+      </div>
+
+      <h3>Tool</h3>
+      <div class="form-group">
+        <label>Setup:</label>
+        <input type="text" value="Optical Table" />
+      </div>
+      <div class="form-group">
+        <label>Angle of incidence:</label>
+        <input type="text" value="Off-axis" />
+      </div>
+
+      <h3>Notes</h3>
+      <div class="form-group">
+        <textarea placeholder="Add any comments or additional tests here"></textarea>
+      </div>
+    `;
+  
+
+
+
   } else {
     // Return the full settings for other test types
     return `
@@ -548,6 +626,7 @@
   else if (testType === "transmission") headerText = "Transmission";
   else if (testType === "images") headerText = "Images";
   else if (testType === "electrical") headerText = "Electrical";
+  else if (testType === "haze") headerText = "Haze";
 
   const fullName = nextID + " " + headerText;
 
@@ -594,6 +673,8 @@
     else if (testType === "transmission") headerText = "Transmission";
     else if (testType === "images") headerText = "Images";
     else if (testType === "electrical") headerText = "Electrical";
+    else if (testType === "haze") headerText = "Haze";
+
     const fullName = newNumber + " " + headerText;
     child.querySelector(".header").innerText = fullName;
     // Also update the "Show Settings" button's onclick attribute with the new index
