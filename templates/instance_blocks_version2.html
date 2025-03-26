@@ -378,6 +378,24 @@
 >
   Clear All Tests
 </button>
+<button
+onclick="submitTestPlan()"
+style="
+  width: 200px;
+  border: none;
+  background-color: #24d833;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left: -20px;
+  margin-right: 160px;"
+>
+Submit Test
+</button>
 
   </div>
 
@@ -926,6 +944,16 @@
     } else {
       constructionInfo.textContent = "(No Construction Selected)";
     }
+
+}
+function submitTestPlan() {
+  const confirmed = confirm("Are you sure you want to submit the test plan?");
+  if (confirmed) {
+    // In the future, replace this with real logic to send data
+    alert("Submission confirmed.");
+  } else {
+    alert("Submission cancelled.");
+  }
 }
 
 
