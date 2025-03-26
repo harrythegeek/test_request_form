@@ -517,11 +517,14 @@
 
   // Build the block
   const newBlock = document.createElement("div");
+  newBlock.setAttribute("data-test-type", testType);
   newBlock.classList.add("container");
   
   // Add a <div> for showing the chosen construction
     newBlock.innerHTML = `
-  <button class="delete-btn" onclick="this.parentElement.remove()">X</button>
+
+  <button class="delete-btn" onclick="deleteTest(this)">X</button>
+
   <h3 class="construction-info" style="font-weight: bold; margin-bottom: 8px;">
     (No Construction Selected)
   </h3>
@@ -543,29 +546,25 @@
       renumberTests();
     }
 
+
     function renumberTests() {
-      const container = document.getElementById("test-container");
-      // Iterate over each test block (child element)
-      Array.from(container.children).forEach((child, index) => {
-        const newNumber = index + 1;
-        // Retrieve the test type from the data attribute
-        const testType = child.getAttribute("data-test-type");
-        let headerText = "";
-        if (testType === "switching") {
-          headerText = "Switching Speed";
-        } else if (testType === "transmission") {
-          headerText = "Transmission";
-        } else {
-          headerText = "Images";
-        }
-        const fullName = newNumber + " " + headerText;
-        // Update the header text of the block
-        child.querySelector(".header").innerText = fullName;
-        // Update the "Show Settings" button's onclick to include the new fullName
-        const showBtn = child.querySelector(".add-btn");
-        showBtn.setAttribute("onclick", `showSettingsPanel('${testType}', '${fullName}')`);
-      });
-    }
+  const container = document.getElementById("test-container");
+  Array.from(container.children).forEach((child, index) => {
+    const newNumber = index + 1;
+    // Assuming you store the test type in a data attribute
+    const testType = child.getAttribute("data-test-type");
+    let headerText = "";
+    if (testType === "switching") headerText = "Switching Speed";
+    else if (testType === "transmission") headerText = "Transmission";
+    else headerText = "Images";
+    const fullName = newNumber + " " + headerText;
+    child.querySelector(".header").innerText = fullName;
+    // Also update the "Show Settings" button's onclick attribute with the new index
+    const showBtn = child.querySelector(".add-btn");
+    showBtn.setAttribute("onclick", `showSettingsPanel('${testType}', '${fullName}', ${index})`);
+  });
+}
+
 
 
     function loadTemplateTestPlan() {
