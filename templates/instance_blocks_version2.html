@@ -464,16 +464,19 @@ Submit Test
       </div>
     </div>
     <!-- Info Text for Settings Panel -->
-    <div style="
+    <div id="settingsInfoText"
+    
+    style="
       margin-top: 20px;
+      font-weight: 600;
       margin-bottom: 10px;
-      font-size: 15px;
+      font-size: 25px;
       color: #333;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
       padding: 0 10px;
     ">
-      This panel displays the test configuration. Make sure to adjust parameters as needed for each test block.
+      This sections contains the information of the parameters for each test. You can toggle this to change your requirements
     </div>
   </div>
 
@@ -935,6 +938,9 @@ Submit Test
 
       const panel = document.getElementById("globalSettingsPanel");
       const content = document.getElementById("settingsContent");
+
+      // Hide the info text
+      document.getElementById("settingsInfoText").style.display = "none";
 
       const settingsHTML = `
         <h2 style="margin-top: 0;">${fullName}</h2>
