@@ -972,6 +972,7 @@ Submit Test
     // Hides the settings panel content (heading remains visible)
     function closeSettingsPanel() {
       document.getElementById("panelContent").style.display = "none";
+      document.getElementById("settingsInfoText").style.display = "block"; // <-- this brings the info text back
     }
 
     function saveConstruction() {
