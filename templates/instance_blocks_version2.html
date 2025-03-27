@@ -404,6 +404,7 @@ Submit Test
 
   <!-- Center column: Test Plan and Blocks -->
   <div class="center-col">
+
     <div style="
       background-color: #fff;
       border-radius: 8px;
@@ -418,6 +419,24 @@ Submit Test
     </div>
     <!-- Test Instances Container -->
     <div class="container-wrapper" id="test-container"></div>
+
+    <div id="placeholderMessage" style="
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  ">
+    This is the Test Plan area. Here you will populate the area with test boxes after you select to add test. 
+    Then you will press "show settings" to set the main parameters of the test
+  </div>
+  
+  
   </div>
 
   <!-- Right column: Test Settings (always-visible heading, toggled content below) -->
@@ -436,12 +455,25 @@ Submit Test
       z-index: 10000;">
       <h2 style="margin: 0;">Test Settings</h2>
     </div>
+
     <!-- Toggled panel content wrapper -->
     <div class="settings-panel" id="globalSettingsPanel">
       <div id="panelContent" style="display: none;">
         <button class="close-panel" onclick="closeSettingsPanel()">X</button>
         <div id="settingsContent"></div>
       </div>
+    </div>
+    <!-- Info Text for Settings Panel -->
+    <div style="
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #333;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      padding: 0 10px;
+    ">
+      This panel displays the test configuration. Make sure to adjust parameters as needed for each test block.
     </div>
   </div>
 
@@ -806,7 +838,8 @@ Submit Test
   function addTest() {
   const container = document.getElementById("test-container");
   const testType = document.getElementById("test-type").value;
-  if (!testType) return;
+  if (!testType) return; document.getElementById("placeholderMessage").style.display = "none";
+
 
   // Figure out next index:
   const nextID = container.children.length + 1;
@@ -851,6 +884,13 @@ Submit Test
       el.parentElement.remove();
       // Renumber all test blocks after deletion
       renumberTests();
+      const testContainer = document.getElementById("test-container");
+      const placeholder = document.getElementById("placeholderMessage");
+
+      if (testContainer.children.length === 0) {
+        placeholder.style.display = "block";
+      }
+
     }
 
 
@@ -912,6 +952,14 @@ Submit Test
   function clearAllTests() {
   const container = document.getElementById("test-container");
   container.innerHTML = ""; // Remove all blocks
+  const testContainer = document.getElementById("test-container");
+  const placeholder = document.getElementById("placeholderMessage");
+
+  if (testContainer.children.length === 0) {
+    placeholder.style.display = "block";
+  }
+
+
     }
 
 
