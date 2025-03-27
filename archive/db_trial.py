@@ -1,10 +1,3 @@
-import mysql.connector
-
-
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="yourusername",
-  password="yourpassword"
-)
-
-print(mydb)
+x=2
+y=2
+z=[1,2,3]

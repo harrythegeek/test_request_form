@@ -330,8 +330,8 @@
           <div onclick="setDropdownValue('haze')">Haze</div>
           <div onclick="setDropdownValue('uvvis')">UV-VIS</div>
           <div onclick="setDropdownValue('eldim')">ELDIM</div>
+          <div onclick="setDropdownValue('custom')">Custom Test</div>
 
-          
 
         </div>
       </div>
@@ -505,6 +505,8 @@ Submit Test
         btn.innerText = "UV-VIS ▼";
       } else if (value === "eldim") {
         btn.innerText = "ELDIM ▼";
+      } else if (value === "custom") {
+        btn.innerText = "Custom ▼";
       }else {
         btn.innerText = "Images ▼";
       }
@@ -757,7 +759,30 @@ Submit Test
         <textarea placeholder="Add any comments or additional tests here"></textarea>
       </div>
     `;
-  
+  }
+
+    else if (testType === "custom") {
+  return `
+    <h3>Build Your Custom Test</h3>
+    <div class="form-group">
+      <label><input type="checkbox" id="includeConstruction" checked /> Construction</label>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="includePolarisers" /> Polarisers</label>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="includeVoltage" /> Voltage</label>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="includeTool" /> Tool</label>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="includeNotes" /> Notes</label>
+    </div>
+    <button onclick="generateCustomFields()">Apply</button>
+    <div id="customFieldsContainer"></div>
+  `;
+
 
 
 
@@ -831,9 +856,7 @@ Submit Test
       </div>
     `;
   }
-}
-
-
+    }
 
 
 
@@ -856,6 +879,7 @@ Submit Test
   else if (testType === "haze") headerText = "Haze";
   else if (testType === "uvvis") headerText = "UV-VIS";
   else if (testType === "eldim") headerText = "ELDIM";
+  else if (testType === "custom") headerText = "Custom Test";
 
   const fullName = nextID + " " + headerText;
 
@@ -1010,6 +1034,39 @@ function submitTestPlan() {
     alert("Submission confirmed.");
   } else {
     alert("Submission cancelled.");
+  }
+}
+
+function generateCustomFields() {
+  const container = document.getElementById("customFieldsContainer");
+  container.innerHTML = "";
+
+  if (document.getElementById("includeConstruction").checked) {
+    container.innerHTML += `
+      <h3>Construction</h3>
+      <div class="form-group"><label>Type:</label>
+        <select><option>Single</option><option>Double</option></select>
+      </div>`;
+  }
+  if (document.getElementById("includePolarisers").checked) {
+    container.innerHTML += `
+      <h3>Polarisers</h3>
+      <div class="form-group"><label>Type:</label><select>
+        <option>Normal</option><option>High Contrast</option></select></div>`;
+  }
+  if (document.getElementById("includeVoltage").checked) {
+    container.innerHTML += `
+      <h3>Voltage</h3>
+      <div class="form-group"><label>Range:</label><input type="text" /></div>`;
+  }
+  if (document.getElementById("includeTool").checked) {
+    container.innerHTML += `
+      <h3>Tool</h3>
+      <div class="form-group"><label>Setup:</label><input type="text" /></div>`;
+  }
+  if (document.getElementById("includeNotes").checked) {
+    container.innerHTML += `
+      <h3>Notes</h3><div class="form-group"><textarea></textarea></div>`;
   }
 }
 
