@@ -32,7 +32,7 @@
       width: 3px;
       background: #ddd;
       /* This places the line 35px outside the right edge of .left-col */
-      right: -60px;
+      right: -40px;
     }
 
     /* Center column: holds controls + blocks with extra margin on the right */
@@ -320,8 +320,8 @@
       </div>
 
     </div>
-    <!-- Controls (dropdown + Add Test) below the form -->
-    <div class="controls">
+    <div class="controls" style="display: flex; align-items: flex-start; gap: 10px;">
+      <!-- Column 1: Dropdown + Hidden Input -->
       <div class="custom-dropdown">
         <button class="dropdown-btn" onclick="toggleDropdown()">Select Test ▼</button>
         <div class="dropdown-content" id="dropdown-menu">
@@ -333,14 +333,21 @@
           <div onclick="setDropdownValue('uvvis')">UV-VIS</div>
           <div onclick="setDropdownValue('eldim')">ELDIM</div>
           <div onclick="setDropdownValue('custom')">Custom Test</div>
-
-
         </div>
       </div>
       <input type="hidden" id="test-type" value="" />
-      <button class="add-btn" onclick="addTest()">Add Test</button>
-      
+    
+      <!-- Column 2: Stack Add Test over Add Action -->
+      <div style="display: flex; flex-direction: column;">
+        <button class="add-btn" onclick="addTest()">Add Test</button>
+        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #227de6; color: #fff;">
+          Add Action!
+        </button>
+      </div>
     </div>
+    
+
+
     <!-- Add the Load Template Test Plan button underneath the controls -->
     <div style="
     padding: 1em;
