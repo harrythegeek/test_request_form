@@ -68,7 +68,7 @@
     }
     .form-container h2 {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .form-group {
       margin-bottom: 10px;
@@ -339,10 +339,8 @@
     
       <!-- Column 2: Stack Add Test over Add Action -->
       <div style="display: flex; flex-direction: column;">
-        <button class="add-btn" onclick="addTest()" style = background-color:#165e9c;>Add Test</button>
-        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #165e9c; color: #fff;">
-          Add Action!
-        </button>
+        <button class="add-btn" onclick="addTest()" style = "background-color:#165e9c";>Add Test</button>
+        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #165e9c; color: #fff;">Add Action!</button>
       </div>
     </div>
     
@@ -351,14 +349,14 @@
     <!-- Add the Load Template Test Plan button underneath the controls -->
     <div style="
     padding: 1em;
-    margin-top: -55px;
+
     text-align: center;
     ">
     <button
       style="
         width: 200px;
         border: none;
-        background-color: #165e9c;
+        background-color: #297679;
         color: white;
         font-size: 16px;
         font-weight: bold;
@@ -635,6 +633,8 @@ Submit Test
         <textarea placeholder="Add any comments or additional tests here"></textarea>
       </div>
     `;
+
+
   } else if (testType === "eldim"){
     // Return the full settings for other test types
     return `
@@ -772,28 +772,27 @@ Submit Test
     `;
   }
 
-    else if (testType === "custom") {
+    else if (testType === "action") {
   return `
-    <h3>Build Your Custom Test</h3>
-    <div class="form-group">
-      <label><input type="checkbox" id="includeConstruction" checked /> Construction</label>
-    </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="includePolarisers" /> Polarisers</label>
-    </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="includeVoltage" /> Voltage</label>
-    </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="includeTool" /> Tool</label>
-    </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="includeNotes" /> Notes</label>
-    </div>
-    <button onclick="generateCustomFields()">Apply</button>
-    <div id="customFieldsContainer"></div>
-  `;
+        <h3>Action Type</h3>
+      <div class="form-group">
+        <label>Select the action:</label>
+        <select id="actionDropdown">
+          <option value="">--Select--</option>
+          <option value="Lamination">Lamination</option>
+          <option value="Reliability Test">Reliability Test</option>
+          <option value="Singulation">Singulation</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button onclick="saveAction()">Save Action</button>
 
+      <h3>Notes</h3>
+      <div class="form-group">
+        <textarea placeholder="Add any relevant action details here"></textarea>
+      </div>
+    `;
+  
 
 
 
@@ -933,7 +932,7 @@ Submit Test
     }
 
 
-    function renumberTests() {
+  function renumberTests() {
   const container = document.getElementById("test-container");
   Array.from(container.children).forEach((child, index) => {
     const newNumber = index + 1;
@@ -947,6 +946,7 @@ Submit Test
     else if (testType === "haze") headerText = "Haze";
     else if (testType === "uvvis") headerText = "UV-VIS";
     else if (testType === "eldim") headerText = "ELDIM";
+    else if (testType === "action") headerText = "Action";
 
     const fullName = newNumber + " " + headerText;
     child.querySelector(".header").innerText = fullName;
@@ -990,6 +990,79 @@ Submit Test
 
 
     }
+
+
+  function addAction() {
+  const container = document.getElementById("test-container");
+  // Hide placeholder message
+  document.getElementById("placeholderMessage").style.display = "none";
+
+  // Figure out next block index
+  const nextID = container.children.length + 1;
+  const headerText = "Action"; // Will show “Action” in block heading
+  const fullName = nextID + " " + headerText; // e.g. “1 Action” etc.
+
+  // Create a new block
+  const newBlock = document.createElement("div");
+  newBlock.setAttribute("data-test-type", "action");
+  newBlock.classList.add("container");
+
+  // Give it an orange background
+  newBlock.style.backgroundColor = "orange";
+
+  // Fill the block’s inner HTML
+  newBlock.innerHTML = `
+    <button class="delete-btn" onclick="deleteTest(this)">X</button>
+
+    <!-- Construction info label, same styling to match existing blocks -->
+    <h3 class="construction-info" style="font-weight: bold; margin-bottom: 8px;">
+      (No Action Defined)
+    </h3>
+
+    <!-- “Action #” header -->
+    <div class="header" style="background-color: #D35400;">${fullName}</div>
+
+    <button
+      class="add-btn"
+      style="width: 100%; font-size:14px; padding: 8px;"
+      onclick="showSettingsPanel('action', '${fullName}', ${container.children.length})"
+    >
+      Show Settings
+    </button>
+  `;
+
+  container.appendChild(newBlock);
+}
+
+
+function saveAction() {
+  // If no block is open, do nothing
+  if (currentIndex < 0) return;
+
+  const dropdown = document.getElementById("actionDropdown");
+  const selectedValue = dropdown.value;
+
+  // Access the correct block from #test-container
+  const container = document.getElementById("test-container");
+  const blocks = container.children;
+
+  if (!blocks[currentIndex]) {
+    alert("Block no longer exists.");
+    return;
+  }
+
+  // Update the .construction-info text
+  const constructionInfo = blocks[currentIndex].querySelector(".construction-info");
+  if (selectedValue) {
+    constructionInfo.textContent = "Action: " + selectedValue;
+  } else {
+    constructionInfo.textContent = "(No Action Defined)";
+  }
+}
+
+
+
+
 
   function clearAllTests() {
   const container = document.getElementById("test-container");
