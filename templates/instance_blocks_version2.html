@@ -173,7 +173,7 @@
       display: inline-block;
     }
     .dropdown-btn {
-      background-color: #34495E;
+      background-color: #165e9c;
       color: white;
       padding: 10px;
       font-size: 16px;
@@ -320,7 +320,7 @@
       </div>
 
     </div>
-    <div class="controls" style="display: flex; align-items: flex-start; gap: 10px;">
+    <div class="controls" style="display: flex; align-items: flex-start; margin-left:15px; gap: 10px;">
       <!-- Column 1: Dropdown + Hidden Input -->
       <div class="custom-dropdown">
         <button class="dropdown-btn" onclick="toggleDropdown()">Select Test ▼</button>
@@ -339,8 +339,8 @@
     
       <!-- Column 2: Stack Add Test over Add Action -->
       <div style="display: flex; flex-direction: column;">
-        <button class="add-btn" onclick="addTest()">Add Test</button>
-        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #227de6; color: #fff;">
+        <button class="add-btn" onclick="addTest()" style = background-color:#165e9c;>Add Test</button>
+        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #165e9c; color: #fff;">
           Add Action!
         </button>
       </div>
@@ -351,14 +351,14 @@
     <!-- Add the Load Template Test Plan button underneath the controls -->
     <div style="
     padding: 1em;
-    margin-top: 1em;
+    margin-top: -55px;
     text-align: center;
     ">
     <button
       style="
         width: 200px;
         border: none;
-        background-color: #3498db;
+        background-color: #165e9c;
         color: white;
         font-size: 16px;
         font-weight: bold;
@@ -370,12 +370,14 @@
         ">
       Load Template Test
     </button>
+
+
     <button
   onclick="clearAllTests()"
   style="
     width: 200px;
     border: none;
-    background-color: #e74c3c;
+    background-color: #DC3545;
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -393,7 +395,7 @@ onclick="submitTestPlan()"
 style="
   width: 200px;
   border: none;
-  background-color: #24d833;
+  background-color: #198754;
   color: white;
   font-size: 16px;
   font-weight: bold;
