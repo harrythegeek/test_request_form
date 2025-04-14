@@ -230,7 +230,7 @@
       margin-bottom: 10px;
       border-bottom: 2px solid #ddd;
       padding-bottom: 5px;
-      font-size: 16px;
+      font-size: 20px;
     }
     .settings-panel .form-group {
       display: flex;
@@ -242,7 +242,7 @@
       font-weight: normal !important;
       flex: 1;
       margin-right: 10px;
-      font-size: 14px;
+      font-size: 18px;
     }
     .settings-panel .form-group input,
     .settings-panel .form-group select,
@@ -251,7 +251,7 @@
       padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 18px;
     }
     .settings-panel textarea {
       width: 100%;
@@ -1081,7 +1081,7 @@ function deleteTest(el) {
   newBlock.classList.add("container");
 
   // Give it an orange background
-  newBlock.style.backgroundColor = "orange";
+  newBlock.style.backgroundColor = "#1abc9c"; // Gold color
 
   // Fill the block’s inner HTML
   newBlock.innerHTML = `
@@ -1093,11 +1093,11 @@ function deleteTest(el) {
     </h3>
 
     <!-- “Action #” header -->
-    <div class="header" style="background-color: #D35400;">${fullName}</div>
+    <div class="header" style="background-color: #D35400; font-size:20px; ">${fullName}</div>
 
     <button
       class="add-btn"
-      style="width: 100%; font-size:14px; padding: 8px;"
+      style="width: 100%; font-size:18px; padding: 8px;"
       onclick="showSettingsPanel('action', '${fullName}', ${container.children.length})"
     >
       Show Settings
