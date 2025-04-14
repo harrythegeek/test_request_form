@@ -497,8 +497,9 @@ Submit Test
       font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
       padding: 0 10px;
+      
     ">
-      This sections contains the information of the parameters for each test. You can toggle this to change your requirements
+      This section contains the information of the parameters for each test. You can toggle this to change your requirements
     </div>
   </div>
 
@@ -1150,9 +1151,16 @@ function saveAction() {
 // Function to submit the test plan (for demonstration purposes)
 let submissionID = ""; // Global variable to store the submission ID
 
-// Function to generate a unique Submission ID
 function generateSubmissionID() {
-  submissionID = `SUB-${Date.now()}`; // Use timestamp for uniqueness
+  const now = new Date();
+  const formattedDate = `${now.getFullYear()}${(now.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}`;
+  const formattedTime = `${now.getHours().toString().padStart(2, "0")}${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}${now.getSeconds().toString().padStart(2, "0")}`;
+  submissionID = `SUB-${formattedDate}-${formattedTime}`; // Example: SUB-20250414-153045
 
   // Display the Submission ID in the top-left corner of the center column
   const centerCol = document.querySelector(".center-col");
@@ -1181,6 +1189,8 @@ function generateSubmissionID() {
   submissionIDDisplay.innerText = `Submission ID: ${submissionID}`;
   centerCol.appendChild(submissionIDDisplay); // Add it to the top-left corner of the center column
 }
+
+
 
 // Call the function to generate the Submission ID when the page loads
 window.onload = generateSubmissionID;
