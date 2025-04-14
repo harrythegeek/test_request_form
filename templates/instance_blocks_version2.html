@@ -510,6 +510,7 @@
       margin-left: auto;
       margin-right: auto;
       z-index: 10000;
+      border: 2px solid #ccc;
       ">
       <h2 style="margin: 0;">Test Settings</h2>
     </div>
@@ -975,11 +976,11 @@ function closeDropdownOnClickOutside(event) {
 
   <button class="delete-btn" onclick="deleteTest(this)">X</button>
 
-  <h3 class="construction-info" style="font-weight: bold; margin-bottom: 8px;">
+  <h3 class="construction-info" style="font-weight: bold; margin-bottom: 8px; font-size: 16px;">
     (No Construction Selected)
   </h3>
-  <div class="header">${fullName}</div>
-  <button class="add-btn" style="width: 100%; font-size:14px; padding: 8px;"
+  <div class="header" style="font-size: 20px; font-weight: bold;">${fullName}</div>
+  <button class="add-btn" style="width: 100%; font-size:18px; padding: 8px;"
           onclick="showSettingsPanel('${testType}', '${fullName}', ${container.children.length})">
     Show Settings
   </button>
@@ -989,19 +990,19 @@ function closeDropdownOnClickOutside(event) {
 }
 
 
-    function deleteTest(el) {
-      // Remove the test block
-      el.parentElement.remove();
-      // Renumber all test blocks after deletion
-      renumberTests();
-      const testContainer = document.getElementById("test-container");
-      const placeholder = document.getElementById("placeholderMessage");
+function deleteTest(el) {
+  // Remove the test block
+  el.parentElement.remove();
+  // Renumber all test blocks after deletion
+  renumberTests();
+  const testContainer = document.getElementById("test-container");
+  const placeholder = document.getElementById("placeholderMessage");
 
-      if (testContainer.children.length === 0) {
-        placeholder.style.display = "block";
-      }
+  if (testContainer.children.length === 0) {
+    placeholder.style.display = "block";
+  }
 
-    }
+}
 
 
   function renumberTests() {
