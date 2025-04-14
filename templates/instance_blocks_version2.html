@@ -290,7 +290,10 @@
       text-align: center;
       width: 100%;
       margin-left: auto;
-      margin-right: auto;">
+      margin-right: auto;
+      border: 2px solid #ccc;"
+      
+      >
       <h2 style="margin: 0;">Test Request</h2>
     </div>
 
@@ -431,7 +434,8 @@ Submit Test
       text-align: center;
       width: 600px; /* <- fixed width instead of % */
       margin-left: auto;
-      margin-right: auto;">
+      margin-right: auto;
+      border: 2px solid #ccc;">
       <h2 style="margin: 0;">Test Plan</h2>
     </div>
     <!-- Test Instances Container -->
@@ -469,7 +473,8 @@ Submit Test
       width: 90%;
       margin-left: auto;
       margin-right: auto;
-      z-index: 10000;">
+      z-index: 10000;
+      ">
       <h2 style="margin: 0;">Test Settings</h2>
     </div>
 
@@ -1141,15 +1146,64 @@ function saveAction() {
     }
 
 }
+
+// Function to submit the test plan (for demonstration purposes)
+let submissionID = ""; // Global variable to store the submission ID
+
+// Function to generate a unique Submission ID
+function generateSubmissionID() {
+  submissionID = `SUB-${Date.now()}`; // Use timestamp for uniqueness
+
+  // Display the Submission ID in the top-left corner of the center column
+  const centerCol = document.querySelector(".center-col");
+
+  // Remove any existing Submission ID display
+  const existingSubmissionIDDisplay = document.getElementById("submission-id-display");
+  if (existingSubmissionIDDisplay) {
+    existingSubmissionIDDisplay.remove();
+  }
+
+  // Create a new div for the Submission ID
+  const submissionIDDisplay = document.createElement("div");
+  submissionIDDisplay.id = "submission-id-display"; // Assign an ID for easy removal
+  submissionIDDisplay.style = `
+    position: absolute;
+    top: 10px;
+    left: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  `;
+  submissionIDDisplay.innerText = `Submission ID: ${submissionID}`;
+  centerCol.appendChild(submissionIDDisplay); // Add it to the top-left corner of the center column
+}
+
+// Call the function to generate the Submission ID when the page loads
+window.onload = generateSubmissionID;
+
+
+
+// Function to submit the test plan
 function submitTestPlan() {
   const confirmed = confirm("Are you sure you want to submit the test plan?");
   if (confirmed) {
-    // In the future, replace this with real logic to send data
-    alert("Submission confirmed.");
+    // Log the Submission ID
+    console.log("Submission ID:", submissionID);
+
+    // Alert the user with the Submission ID
+    alert(`Submission confirmed. Your Submission ID is: ${submissionID}`);
+
+    // Optionally, regenerate a new Submission ID for the next submission
+    generateSubmissionID();
   } else {
     alert("Submission cancelled.");
   }
 }
+
 
 function generateCustomFields() {
   const container = document.getElementById("customFieldsContainer");
