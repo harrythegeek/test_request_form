@@ -65,6 +65,7 @@
       width: 100%;
       margin-bottom: 20px;
       border: 1px solid #ccc;
+      font-size: 18px ;
     }
     .form-container h2 {
       text-align: center;
@@ -84,9 +85,10 @@
       padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 18px;
       box-sizing: border-box; /* <-- Add this to ensure padding is included in width */
       appearance: none; /* Optional: normalize styling across browsers */
+      
     }
 
     /* Controls (dropdown + Add Test) at the bottom of left-col */
@@ -196,6 +198,7 @@
       padding: 10px;
       cursor: pointer;
       transition: background 0.2s;
+      font-size: 20px;
     }
     .dropdown-content div:hover {
       background-color: #f1f1f1;
@@ -259,7 +262,7 @@
     .load-template-btn {
       background-color: #3498db; /* A modern shade of blue */
       color: white;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
       padding: 10px;
       border: none;
@@ -348,15 +351,15 @@
 
     <!-- Add the Load Template Test Plan button underneath the controls -->
     <div style="
-    padding: 1em;
-
+    padding: 0.1em;
+    margin-top: 10px;
     text-align: center;
     ">
     <button
       style="
         width: 200px;
         border: none;
-        background-color: #297679;
+        background-color: #20b9c4;
         color: white;
         font-size: 16px;
         font-weight: bold;
@@ -365,7 +368,10 @@
         cursor: pointer;
         margin-left: -20px;
         margin-right: 160px;
-        ">
+   
+        "
+        
+        >
       Load Template Test
     </button>
 
@@ -384,7 +390,8 @@
     cursor: pointer;
     margin-top: 10px;
     margin-left: -20px;
-    margin-right: 160px;"
+    margin-right: 160px;
+   "
 >
   Clear All Tests
 </button>
@@ -393,7 +400,7 @@ onclick="submitTestPlan()"
 style="
   width: 200px;
   border: none;
-  background-color: #198754;
+  background-color: #15be70;
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -493,11 +500,31 @@ Submit Test
 
 
   <script>
-    // Toggles the test dropdown
-    function toggleDropdown() {
-      const dropdown = document.getElementById("dropdown-menu");
-      dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-    }
+ // Toggles the test dropdown
+function toggleDropdown() {
+  const dropdown = document.getElementById("dropdown-menu");
+  const isDropdownOpen = dropdown.style.display === "block";
+
+  // Toggle the dropdown visibility
+  dropdown.style.display = isDropdownOpen ? "none" : "block";
+
+  if (!isDropdownOpen) {
+    // Add a click listener to close the dropdown when clicking outside
+    document.addEventListener("click", closeDropdownOnClickOutside);
+  }
+}
+
+// Closes the dropdown when clicking outside
+function closeDropdownOnClickOutside(event) {
+  const dropdown = document.getElementById("dropdown-menu");
+  const dropdownButton = document.querySelector(".dropdown-btn");
+
+  // Check if the click is outside the dropdown and button
+  if (!dropdown.contains(event.target) && !dropdownButton.contains(event.target)) {
+    dropdown.style.display = "none";
+    document.removeEventListener("click", closeDropdownOnClickOutside); // Remove the listener
+  }
+}
 
     // Sets the test type from dropdown
     function setDropdownValue(value) {
@@ -544,7 +571,7 @@ Submit Test
       <h3>Tool</h3>
       <div class="form-group">
         <label>Setup:</label>
-        <input type="text" value="Electrical Panel" id="electricalSetup" name="electricalSetup"/>
+        <input type="text" value="Multimeter" id="electricalSetup" name="electricalSetup"/>
       </div>
       
       <h3>Notes</h3>
@@ -589,29 +616,29 @@ Submit Test
       </div>
       <div class="form-group">
         <label>Lamination:</label>
-        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+        <input type="text" value="${testType === "switching" ? "loose" : "laminated"}" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol1:</label>
-        <input type="text" value="0deg" />
+        <label>Orientation of pol1 (deg):</label>
+        <input type="text" value="0" />
       </div>
       <div class="form-group">
-        <label>Orientation of cell:</label>
-        <input type="text" value="45deg" />
+        <label>Orientation of cell (deg):</label>
+        <input type="text" value="45" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol2:</label>
-        <input type="text" value="90deg" />
+        <label>Orientation of pol2 (deg):</label>
+        <input type="text" value="90" />
       </div>
 
       <h3>Voltage</h3>
       <div class="form-group">
-        <label>Range:</label>
-        <input type="text" value="0V - 50V" />
+        <label>Range (V):</label>
+        <input type="text" value="0-50" />
       </div>
       <div class="form-group">
-        <label>Single Point:</label>
-        <input type="text" value="30V" />
+        <label>One Point (V):</label>
+        <input type="text" value="30" />
       </div>
       <div class="form-group">
         <label>Sweep:</label>
@@ -660,29 +687,29 @@ Submit Test
       </div>
       <div class="form-group">
         <label>Lamination:</label>
-        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+        <input type="text" value="${testType === "switching" ? "loose" : "laminated"}" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol1:</label>
-        <input type="text" value="0deg" />
+        <label>Orientation of pol1 (deg):</label>
+        <input type="text" value="0" />
       </div>
       <div class="form-group">
-        <label>Orientation of cell:</label>
-        <input type="text" value="45deg" />
+        <label>Orientation of cell (deg):</label>
+        <input type="text" value="45" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol2:</label>
-        <input type="text" value="90deg" />
+        <label>Orientation of pol2 (deg):</label>
+        <input type="text" value="90" />
       </div>
 
       <h3>Voltage</h3>
       <div class="form-group">
-        <label>Range:</label>
-        <input type="text" value="0V - 50V" />
+        <label>Range (V):</label>
+        <input type="text" value="0-50" />
       </div>
       <div class="form-group">
-        <label>Single Point:</label>
-        <input type="text" value="30V" />
+        <label>One Point (V):</label>
+        <input type="text" value="30" />
       </div>
       <div class="form-group">
         <label>Sweep:</label>
@@ -726,29 +753,29 @@ Submit Test
       </div>
       <div class="form-group">
         <label>Lamination:</label>
-        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+        <input type="text" value="${testType === "switching" ? "loose" : "laminated"}" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol1:</label>
-        <input type="text" value="0deg" />
+        <label>Orientation of pol1 (deg):</label>
+        <input type="text" value="0" />
       </div>
       <div class="form-group">
-        <label>Orientation of cell:</label>
-        <input type="text" value="45deg" />
+        <label>Orientation of cell (deg):</label>
+        <input type="text" value="45" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol2:</label>
-        <input type="text" value="90deg" />
+        <label>Orientation of pol2 (deg):</label>
+        <input type="text" value="90" />
       </div>
 
       <h3>Voltage</h3>
       <div class="form-group">
-        <label>Range:</label>
-        <input type="text" value="0V - 50V" />
+        <label>Range (V):</label>
+        <input type="text" value="0-50" />
       </div>
       <div class="form-group">
-        <label>Single Point:</label>
-        <input type="text" value="30V" />
+        <label>One point (V):</label>
+        <input type="text" value="30" />
       </div>
       <div class="form-group">
         <label>Sweep:</label>
@@ -756,9 +783,12 @@ Submit Test
       </div>
 
       <h3>Tool</h3>
-      <div class="form-group">
-        <label>Setup:</label>
-        <input type="text" value="Optical Table" />
+        <div class="form-group">
+        <label>Type:</label>
+        <select>
+          <option>Old Hazegard</option>
+          <option>New Hazegard</option>
+        </select>
       </div>
       <div class="form-group">
         <label>Angle of incidence:</label>
@@ -821,29 +851,29 @@ Submit Test
       </div>
       <div class="form-group">
         <label>Lamination:</label>
-        <input type="text" value="${testType === "switching" ? "loose" : "tight"}" />
+        <input type="text" value="${testType === "switching" ? "loose" : "laminated"}" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol1:</label>
-        <input type="text" value="0deg" />
+        <label>Orientation of pol1 (deg):</label>
+        <input type="text" value="0" />
       </div>
       <div class="form-group">
-        <label>Orientation of cell:</label>
-        <input type="text" value="45deg" />
+        <label>Orientation of cell (deg):</label>
+        <input type="text" value="45" />
       </div>
       <div class="form-group">
-        <label>Orientation of pol2:</label>
-        <input type="text" value="90deg" />
+        <label>Orientation of pol2 (deg):</label>
+        <input type="text" value="90" />
       </div>
 
       <h3>Voltage</h3>
       <div class="form-group">
-        <label>Range:</label>
-        <input type="text" value="0V - 50V" />
+        <label>Range (V):</label>
+        <input type="text" value="0-50" />
       </div>
       <div class="form-group">
-        <label>Single Point:</label>
-        <input type="text" value="30V" />
+        <label>One point (V):</label>
+        <input type="text" value="30" />
       </div>
       <div class="form-group">
         <label>Sweep:</label>
