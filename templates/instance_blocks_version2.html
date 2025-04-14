@@ -326,100 +326,136 @@
       </div>
 
     </div>
-    <div class="controls" style="display: flex; align-items: flex-start; margin-left:15px; gap: 10px;">
-      <!-- Column 1: Dropdown + Hidden Input -->
-      <div class="custom-dropdown">
-        <button class="dropdown-btn" onclick="toggleDropdown()">Select Test ▼</button>
-        <div class="dropdown-content" id="dropdown-menu">
-          <div onclick="setDropdownValue('switching')">Switching Speed</div>
-          <div onclick="setDropdownValue('transmission')">Transmission</div>
-          <div onclick="setDropdownValue('images')">Images</div>
-          <div onclick="setDropdownValue('electrical')">Electrical</div>
-          <div onclick="setDropdownValue('haze')">Haze</div>
-          <div onclick="setDropdownValue('uvvis')">UV-VIS</div>
-          <div onclick="setDropdownValue('eldim')">ELDIM</div>
-          <div onclick="setDropdownValue('custom')">Custom Test</div>
+
+
+    <div class="controls" style="display: flex; justify-content: space-between; gap: 20px; margin-top: 20px;">
+      <!-- Left Column: Dropdown, Load Template, Clear Tests, Submit Tests -->
+      <div style="display: flex; flex-direction: column; gap: 10px; ">
+        <!-- Dropdown -->
+        <div class="custom-dropdown">
+          <button
+          class="dropdown-btn"
+          onclick="toggleDropdown()"
+          style="
+            background-color: #165e9c;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+            text-align: center;
+            border: 2px solid #000000; /* Add border */
+          "
+        >
+          Select Test ▼
+        </button>
+          <div class="dropdown-content" id="dropdown-menu">
+            <div onclick="setDropdownValue('switching')">Switching Speed</div>
+            <div onclick="setDropdownValue('transmission')">Transmission</div>
+            <div onclick="setDropdownValue('images')">Images</div>
+            <div onclick="setDropdownValue('electrical')">Electrical</div>
+            <div onclick="setDropdownValue('haze')">Haze</div>
+            <div onclick="setDropdownValue('uvvis')">UV-VIS</div>
+            <div onclick="setDropdownValue('eldim')">ELDIM</div>
+            <div onclick="setDropdownValue('custom')">Custom Test</div>
+          </div>
         </div>
-      </div>
-      <input type="hidden" id="test-type" value="" />
+        <input type="hidden" id="test-type" value="" />
     
-      <!-- Column 2: Stack Add Test over Add Action -->
-      <div style="display: flex; flex-direction: column;">
-        <button class="add-btn" onclick="addTest()" style = "background-color:#165e9c";>Add Test</button>
-        <button class="add-btn" onclick="addAction()" style="margin-top: 10px; background-color: #165e9c; color: #fff;">Add Action!</button>
+        <!-- Load Template Button -->
+        <button
+          style="
+            background-color: #165e9c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+          "
+        >
+          Load Template Test
+        </button>
+    
+        <!-- Clear All Tests Button -->
+        <button
+          onclick="clearAllTests()"
+          style="
+            background-color: #DC3545;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+            margin-top: 10px;
+          "
+        >
+          Clear All Tests
+        </button>
+    
+        <!-- Submit Test Button -->
+        <button
+          onclick="submitTestPlan()"
+          style="
+            background-color: #15be70;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+          "
+        >
+          Submit Test
+        </button>
+      </div>
+    
+      <!-- Right Column: Add Test, Add Action -->
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: -116px;">
+        <!-- Add Test Button -->
+        <button
+          class="add-btn"
+          onclick="addTest()"
+          style="
+            background-color: #165e9c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+            border: 2px solid #000000; /* Add border */;
+          "
+        >
+          Add Test
+        </button>
+    
+        <!-- Add Action Button -->
+        <button
+          class="add-btn"
+          onclick="addAction()"
+          style="
+            background-color: #e7b921;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+            border: 2px solid #000000; /* Add border */;
+          "
+        >
+          Add Action!
+        </button>
       </div>
     </div>
-    
-
-
-    <!-- Add the Load Template Test Plan button underneath the controls -->
-    <div style="
-    padding: 0.1em;
-    margin-top: 10px;
-    text-align: center;
-    ">
-    <button
-      style="
-        width: 200px;
-        border: none;
-        background-color: #20b9c4;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        padding: 10px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-left: -20px;
-        margin-right: 160px;
-   
-        "
-        
-        >
-      Load Template Test
-    </button>
-
-
-    <button
-  onclick="clearAllTests()"
-  style="
-    width: 200px;
-    border: none;
-    background-color: #DC3545;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    margin-left: -20px;
-    margin-right: 160px;
-   "
->
-  Clear All Tests
-</button>
-<button
-onclick="submitTestPlan()"
-style="
-  width: 200px;
-  border: none;
-  background-color: #15be70;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-  margin-left: -20px;
-  margin-right: 160px;"
->
-Submit Test
-</button>
-
-  </div>
-
-
   </div>
 
   <!-- Center column: Test Plan and Blocks -->
